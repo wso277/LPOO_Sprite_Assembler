@@ -17,6 +17,7 @@ public class Gui {
 				try {
 					Gui window = new Gui();
 					window.frame.setVisible(true);
+					new FileTree();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
