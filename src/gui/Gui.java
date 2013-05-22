@@ -61,7 +61,8 @@ public class Gui {
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
-		final JMenuItem mntmNew = new JMenuItem("New");
+		final JMenuItem mntmNew = new JMenuItem("New Sprite");
+		mntmNew.setEnabled(false);
 		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -82,12 +83,23 @@ public class Gui {
 				}
 			}
 		});
+		
+		JMenuItem mntmNewProject = new JMenuItem("New Project");
+		mntmNewProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InitProject project = new InitProject();
+				project.setVisible(true);
+				
+				mntmNew.setEnabled(true);
+			}
+		});
+		mnFile.add(mntmNewProject);
 		mnFile.add(mntmNew);
 
-		JMenuItem mntmExport = new JMenuItem("Export");
+		JMenuItem mntmExport = new JMenuItem("Import Project");
 		mnFile.add(mntmExport);
 
-		JMenuItem mntmImport = new JMenuItem("Import");
+		JMenuItem mntmImport = new JMenuItem("Export Project");
 		mnFile.add(mntmImport);
 
 		JMenuItem mntmClose = new JMenuItem("Close");
@@ -97,6 +109,7 @@ public class Gui {
 		mnFile.add(mntmExit);
 
 		JMenu mnEdit = new JMenu("Edit");
+		mnEdit.setEnabled(false);
 		menuBar.add(mnEdit);
 
 		JMenu mnHelp = new JMenu("Help");
