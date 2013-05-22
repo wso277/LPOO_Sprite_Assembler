@@ -2,18 +2,24 @@ package gui;
 
 import java.awt.EventQueue;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.io.File;
+
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 public class gwegsgsgs {
 
 	private JFrame frame;
+	final JFileChooser fc = new JFileChooser();
 
 	/**
 	 * Launch the application.
@@ -75,5 +81,16 @@ public class gwegsgsgs {
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mnHelp.add(mntmAbout);
+		
+		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		fc.setMultiSelectionEnabled(true);
+		
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        "Images", "jpg", "gif", "png", "jpeg", "BMP");
+		
+		fc.setFileFilter(filter);
+		
+		fc.showOpenDialog(mntmAbout);
+		File[] files = fc.getSelectedFiles();
 	}
 }
