@@ -9,13 +9,15 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class InitProject extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textProjectName;
-	private JTextField textField;
-	private JTextField textField_1;
+	static String projectName;
+	static public boolean accept = false;
 
 	/**
 	 * Launch the application.
@@ -50,37 +52,35 @@ public class InitProject extends JDialog {
 		textProjectName.setBounds(237, 62, 114, 19);
 		contentPanel.add(textProjectName);
 		textProjectName.setColumns(10);
-		
-		JLabel lblHeight = new JLabel("Height");
-		lblHeight.setBounds(40, 93, 140, 15);
-		contentPanel.add(lblHeight);
-		
-		JLabel lblWidth = new JLabel("Width");
-		lblWidth.setBounds(40, 122, 140, 15);
-		contentPanel.add(lblWidth);
-		
-		textField = new JTextField();
-		textField.setBounds(237, 91, 114, 19);
-		contentPanel.add(textField);
-		textField.setColumns(10);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(237, 120, 114, 19);
-		contentPanel.add(textField_1);
-		textField_1.setColumns(10);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
-				okButton.setEnabled(false);
+				okButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						
+						projectName = textProjectName.getText();
+						accept = true;
+						dispose();
+						
+					}
+				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
