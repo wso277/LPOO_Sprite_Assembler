@@ -5,8 +5,6 @@ import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,26 +12,22 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.FileChooserUI;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import logic.Sprite;
 import logic.SpriteAssembler;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.GridBagLayout;
+import java.awt.BorderLayout;
 
 public class Gui {
-
-	private JFrame frame;
+	static Boolean fixedSize = false;
+	int x = 0, y = 0;
+	static JFrame frame;
 	final JFileChooser fc = new JFileChooser();
 	public SpriteAssembler project;
-	JPanel panel;
+	static JPanel panel;
 
 	/**
 	 * Launch the application.
@@ -78,40 +72,7 @@ public class Gui {
 		mntmNew.setEnabled(false);
 		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				CreateSprite newSprite = new CreateSprite();
-
-				newSprite.setModalityType(ModalityType.APPLICATION_MODAL);
-				newSprite.setVisible(true);
-
-				if (CreateSprite.accept) {
-					int returnVal = fc.showOpenDialog(mntmNew);
-
-					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						File[] files = fc.getSelectedFiles();
-
-						Sprite animation = null;
-						try {
-							animation = new Sprite(files.clone(),
-									newSprite.spriteName);
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-
-						project.addSprite(animation);
-
-						for (int i = 0; i < animation.getImages().size(); i++) {
-							JLabel image = new JLabel(animation.getImages()
-									.get(i).getImage());
-							
-							image.setLocation(50, 50);
-							panel.add(image);
-							panel.revalidate();
-						}
-						panel.repaint();
-					}
-				}
+				addSpriteToProject(mntmNew);
 			}
 		});
 
@@ -128,45 +89,8 @@ public class Gui {
 					mntmNew.setEnabled(true);
 
 					project = new SpriteAssembler(InitProject.projectName);
-
-					CreateSprite newSprite = new CreateSprite();
-
-					newSprite.setModalityType(ModalityType.APPLICATION_MODAL);
-					newSprite.setVisible(true);
-
-					if (CreateSprite.accept) {
-
-						int returnVal = fc.showOpenDialog(mntmNew);
-
-						if (returnVal == JFileChooser.APPROVE_OPTION) {
-							File[] files = fc.getSelectedFiles();
-
-							Sprite animation = null;
-							try {
-								animation = new Sprite(files.clone(),
-										newSprite.spriteName);
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-
-							project.addSprite(animation);
-
-							for (int i = 0; i < animation.getImages().size(); i++) {
-								JLabel image = new JLabel(animation.getImages()
-										.get(i).getImage());
-								panel.add(image);
-								image.setSize(20, 20);
-								image.setLocation(50,50);
-								
-								panel.revalidate();
-							}
-							System.out.println("chegou");
-
-							panel.repaint();
-						}
-						CreateSprite.accept = false;
-					}
+					addSpriteToProject(mntmNew);
+					CreateSprite.accept = false;
 					InitProject.accept = false;
 				}
 			}
@@ -195,18 +119,15 @@ public class Gui {
 
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mnHelp.add(mntmAbout);
-		frame.getContentPane().setLayout(null);
-
-		panel.setBounds(12, 0, 428, 249);
-		// panel.setBackground(Color.BLUE);
+		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
 		frame.getContentPane().add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{0};
-		gbl_panel.rowHeights = new int[]{0};
-		gbl_panel.columnWeights = new double[]{Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{Double.MIN_VALUE};
-		panel.setLayout(null);
+		gbl_panel.columnWidths = new int[] { 0 };
+		gbl_panel.rowHeights = new int[] { 0 };
+		gbl_panel.columnWeights = new double[] { Double.MIN_VALUE };
+		gbl_panel.rowWeights = new double[] { Double.MIN_VALUE };
 
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fc.setMultiSelectionEnabled(true);
@@ -216,6 +137,56 @@ public class Gui {
 
 		fc.setFileFilter(filter);
 
+	}
+
+	/**
+	 * @param mntmNew
+	 */
+	private void addSpriteToProject(final JMenuItem mntmNew) {
+		CreateSprite newSprite = new CreateSprite();
+
+		newSprite.setModalityType(ModalityType.APPLICATION_MODAL);
+		newSprite.setVisible(true);
+
+		if (CreateSprite.accept) {
+			int returnVal = fc.showOpenDialog(mntmNew);
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File[] files = fc.getSelectedFiles();
+
+				Sprite animation = null;
+				try {
+					animation = new Sprite(files.clone(),
+							CreateSprite.spriteName);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				project.addSprite(animation);
+				for (int i = 0; i < animation.getImages().size(); i++) {
+					JLabel image = new JLabel(animation.getImages().get(i)
+							.getImage());
+					image.setSize(animation.getImages().get(i).getImage()
+							.getIconHeight(), animation.getImages().get(i)
+							.getImage().getIconWidth());
+					if (x
+							+ animation.getImages().get(i).getImage()
+									.getIconWidth() > panel.getWidth()) {
+						x = 0;
+						y += animation.getImages().get(i).getImage()
+								.getIconHeight();
+					} else {
+						x += animation.getImages().get(i).getImage()
+								.getIconWidth();
+					}
+					image.setLocation(x, y);
+					panel.add(image);
+					panel.revalidate();
+				}
+				panel.repaint();
+			}
+		}
 	}
 
 }

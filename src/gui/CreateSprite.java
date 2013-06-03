@@ -60,7 +60,7 @@ public class CreateSprite extends JDialog {
 		txtDefault.setColumns(10);
 		
 		JSpinner spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(new Integer(1), null, null, new Integer(1)));
+		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		spinner.setBounds(281, 87, 114, 20);
 		contentPanel.add(spinner);
 		{
