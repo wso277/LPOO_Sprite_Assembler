@@ -127,7 +127,7 @@ public class InitProject extends JDialog {
 				else
 				{
 					Gui.frame.getContentPane().setLayout(new BorderLayout(0, 0));
-					Gui.frame.setResizable(false);
+					Gui.frame.setResizable(true);
 				}
 				dispose();
 

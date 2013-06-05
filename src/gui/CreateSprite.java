@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 
 public class CreateSprite extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtDefault;
 	static public String spriteName;

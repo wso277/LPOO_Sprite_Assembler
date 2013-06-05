@@ -23,7 +23,7 @@ import java.awt.BorderLayout;
 
 public class Gui {
 	static Boolean fixedSize = false;
-	int x = 0, y = 0;
+	int x = 0, y = 0, highestHeightInRow = 0;
 	static JFrame frame;
 	final JFileChooser fc = new JFileChooser();
 	public SpriteAssembler project;
@@ -36,8 +36,9 @@ public class Gui {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					@SuppressWarnings("unused")
 					Gui window = new Gui();
-					window.frame.setVisible(true);
+					Gui.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -170,17 +171,20 @@ public class Gui {
 					image.setSize(animation.getImages().get(i).getImage()
 							.getIconHeight(), animation.getImages().get(i)
 							.getImage().getIconWidth());
+					if (animation.getImages().get(i).getImage().getIconHeight() > highestHeightInRow)
+					{
+						highestHeightInRow = animation.getImages().get(i).getImage().getIconHeight();
+					}
+						image.setLocation(x, y);
 					if (x
 							+ animation.getImages().get(i).getImage()
 									.getIconWidth() > panel.getWidth()) {
 						x = 0;
-						y += animation.getImages().get(i).getImage()
-								.getIconHeight();
-					} else {
-						x += animation.getImages().get(i).getImage()
-								.getIconWidth();
+						y += highestHeightInRow;
+						highestHeightInRow = 0;
+						image.setLocation(x, y);
 					}
-					image.setLocation(x, y);
+					x += animation.getImages().get(i).getImage().getIconWidth();
 					panel.add(image);
 					panel.revalidate();
 				}
