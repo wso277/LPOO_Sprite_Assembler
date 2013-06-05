@@ -13,11 +13,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class InitProject extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textProjectName;
+	final JSpinner spinner = new JSpinner();
+	final JSpinner heightSpinner = new JSpinner();
+	final JSpinner widthSpinner = new JSpinner();
 
 	/**
 	 * Launch the application.
@@ -60,27 +67,43 @@ public class InitProject extends JDialog {
 		final JLabel lblHeight = new JLabel("Height");
 		lblHeight.setBounds(40, 120, 57, 17);
 		contentPanel.add(lblHeight);
+		widthSpinner.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				changeValue(2);
+			}
+		});
 
-		final JSpinner widthSpinner = new JSpinner();
-		widthSpinner.setModel(new SpinnerNumberModel(new Integer(512), new Integer(16), null, new Integer(16)));
+		widthSpinner.setModel(new SpinnerNumberModel(new Integer(512),
+				new Integer(16), null, new Integer(16)));
 		widthSpinner.setBounds(237, 93, 114, 20);
 		contentPanel.add(widthSpinner);
+		heightSpinner.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				changeValue(1);
+			}
+		});
 
-		final JSpinner heightSpinner = new JSpinner();
-		heightSpinner.setModel(new SpinnerNumberModel(new Integer(512), new Integer(16), null, new Integer(16)));
+		heightSpinner.setModel(new SpinnerNumberModel(new Integer(512),
+				new Integer(16), null, new Integer(16)));
 		heightSpinner.setBounds(237, 119, 114, 20);
 		contentPanel.add(heightSpinner);
 
 		JLabel lblProjectProperties = new JLabel("Project Properties");
 		lblProjectProperties.setBounds(40, 12, 202, 15);
 		contentPanel.add(lblProjectProperties);
-		
+
 		JLabel lblSpriteLenght = new JLabel("Minimum Sprite Lenght");
 		lblSpriteLenght.setBounds(40, 149, 202, 15);
 		contentPanel.add(lblSpriteLenght);
-		
-		JSpinner spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(new Integer(16), new Integer(16), null, new Integer(16)));
+
+		spinner.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				changeValue(0);
+			}
+		});
+
+		spinner.setModel(new SpinnerNumberModel(new Integer(16),
+				new Integer(16), null, new Integer(16)));
 		spinner.setBounds(237, 147, 114, 20);
 		contentPanel.add(spinner);
 
@@ -99,13 +122,16 @@ public class InitProject extends JDialog {
 						(Integer) heightSpinner.getValue());
 				Gui.frame.setSize((Integer) widthSpinner.getValue(),
 						(Integer) heightSpinner.getValue() + 45);
+				Gui.spriteMinSize = (Integer)spinner.getValue();
+				Gui.panelHeight = (Integer)heightSpinner.getValue();
+				Gui.panelWidth = (Integer)widthSpinner.getValue();
 
 				System.out.println("TESTE");
 				System.out.println((Integer) widthSpinner.getValue());
 				System.out.println((Integer) heightSpinner.getValue());
 				System.out.println(Gui.panel.getHeight());
 				System.out.println(Gui.panel.getWidth());
-				//Gui.frame.setResizable(false);
+				// Gui.frame.setResizable(false);
 
 				dispose();
 
@@ -125,6 +151,41 @@ public class InitProject extends JDialog {
 			});
 			cancelButton.setActionCommand("Cancel");
 			buttonPane.add(cancelButton);
+		}
+	}
+
+	public void changeValue(int mode) {
+
+		int value;
+
+		switch (mode) {
+		case 0:
+			value = (Integer) widthSpinner.getValue()
+					/ (Integer) spinner.getValue()
+					* (Integer) spinner.getValue();
+
+			widthSpinner.setValue(value);
+
+			value = (Integer) heightSpinner.getValue()
+					/ (Integer) spinner.getValue()
+					* (Integer) spinner.getValue();
+
+			heightSpinner.setValue(value);
+			break;
+		case 1:
+			value = (Integer) heightSpinner.getValue()
+					/ (Integer) spinner.getValue()
+					* (Integer) spinner.getValue();
+
+			heightSpinner.setValue(value);
+			break;
+		case 2:
+			value = (Integer) widthSpinner.getValue()
+					/ (Integer) spinner.getValue()
+					* (Integer) spinner.getValue();
+
+			widthSpinner.setValue(value);
+			break;
 		}
 	}
 }

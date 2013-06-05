@@ -29,6 +29,9 @@ public class Gui {
 	static public boolean InitAccept = false;
 	static public String spriteName;
 	static public boolean CreateAccept = false;
+	static public int spriteMinSize;
+	static public int panelHeight;
+	static public int panelWidth;
 
 	/**
 	 * Launch the application.
@@ -91,7 +94,7 @@ public class Gui {
 
 					mntmNew.setEnabled(true);
 
-					project = new SpriteAssembler(projectName);
+					project = new SpriteAssembler(projectName, panelHeight, panelWidth);
 					addSpriteToProject(mntmNew);
 					CreateAccept = false;
 					InitAccept = false;
@@ -178,21 +181,23 @@ public class Gui {
 									animation.getImages().get(i).getImage()
 											.getWidth(null));
 
-					if (animation.getImages().get(i).getImage().getHeight(null) > highestHeightInRow) {
-						highestHeightInRow = animation.getImages().get(i)
-								.getImage().getHeight(null);
+					if (animation.getImages().get(i).getYsquares() > highestHeightInRow) {
+						highestHeightInRow = animation.getImages().get(i).getYsquares();
 					}
 
 					animation.getImages().get(i).setLocation(x, y);
-					if (x
-							+ animation.getImages().get(i).getImage()
-									.getWidth(null) > panel.getWidth()) {
+					if (x + animation.getImages().get(i).getXsquares() * spriteMinSize > panel.getWidth()) {
 						x = 0;
-						y += highestHeightInRow;
+						y += highestHeightInRow * spriteMinSize;
 						highestHeightInRow = 0;
 						animation.getImages().get(i).setLocation(x, y);
 					}
-					x += animation.getImages().get(i).getImage().getWidth(null);
+					for (int hsquare=0; hsquare < animation.getImages().get(i).getYsquares();hsquare++) {
+						for (int wsquare=0; wsquare < animation.getImages().get(i).getYsquares(); wsquare++) {
+							project.setFilled(x/spriteMinSize,y/spriteMinSize, 1);
+						}
+					}
+					x += animation.getImages().get(i).getXsquares() * spriteMinSize;
 
 					panel.add(animation.getImages().get(i));
 					panel.revalidate();
