@@ -62,20 +62,27 @@ public class InitProject extends JDialog {
 		contentPanel.add(lblHeight);
 
 		final JSpinner widthSpinner = new JSpinner();
-		widthSpinner.setModel(new SpinnerNumberModel(new Integer(100),
-				new Integer(100), null, new Integer(50)));
+		widthSpinner.setModel(new SpinnerNumberModel(new Integer(512), new Integer(16), null, new Integer(16)));
 		widthSpinner.setBounds(237, 93, 114, 20);
 		contentPanel.add(widthSpinner);
 
 		final JSpinner heightSpinner = new JSpinner();
-		heightSpinner.setModel(new SpinnerNumberModel(new Integer(100),
-				new Integer(100), null, new Integer(50)));
+		heightSpinner.setModel(new SpinnerNumberModel(new Integer(512), new Integer(16), null, new Integer(16)));
 		heightSpinner.setBounds(237, 119, 114, 20);
 		contentPanel.add(heightSpinner);
 
 		JLabel lblProjectProperties = new JLabel("Project Properties");
 		lblProjectProperties.setBounds(40, 12, 202, 15);
 		contentPanel.add(lblProjectProperties);
+		
+		JLabel lblSpriteLenght = new JLabel("Minimum Sprite Lenght");
+		lblSpriteLenght.setBounds(40, 149, 202, 15);
+		contentPanel.add(lblSpriteLenght);
+		
+		JSpinner spinner = new JSpinner();
+		spinner.setModel(new SpinnerNumberModel(new Integer(16), new Integer(16), null, new Integer(16)));
+		spinner.setBounds(237, 147, 114, 20);
+		contentPanel.add(spinner);
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
