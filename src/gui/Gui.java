@@ -171,11 +171,11 @@ public class Gui {
 					image.setSize(animation.getImages().get(i).getImage()
 							.getIconHeight(), animation.getImages().get(i)
 							.getImage().getIconWidth());
-					if (animation.getImages().get(i).getImage().getIconHeight() > highestHeightInRow)
-					{
-						highestHeightInRow = animation.getImages().get(i).getImage().getIconHeight();
+					if (animation.getImages().get(i).getImage().getIconHeight() > highestHeightInRow) {
+						highestHeightInRow = animation.getImages().get(i)
+								.getImage().getIconHeight();
 					}
-						image.setLocation(x, y);
+					image.setLocation(x, y);
 					if (x
 							+ animation.getImages().get(i).getImage()
 									.getIconWidth() > panel.getWidth()) {
