@@ -30,7 +30,8 @@ import javax.swing.JComponent;
 
 public class DraggableComponent extends JComponent {
 
-    /** If sets <b>TRUE</b> this component is draggable */
+	private static final long serialVersionUID = 1L;
+	/** If sets <b>TRUE</b> this component is draggable */
     private boolean draggable = true;
     /** 2D Point representing the coordinate where mouse is, relative parent container */
     protected Point anchorPoint;

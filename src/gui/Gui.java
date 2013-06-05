@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -18,16 +17,18 @@ import java.awt.event.ActionEvent;
 import logic.Sprite;
 import logic.SpriteAssembler;
 import javax.swing.JPanel;
-import java.awt.GridBagLayout;
 import java.awt.BorderLayout;
 
 public class Gui {
-	static Boolean fixedSize = false;
 	int x = 0, y = 0, highestHeightInRow = 0;
 	static JFrame frame;
 	final JFileChooser fc = new JFileChooser();
+	static String projectName;
 	public SpriteAssembler project;
 	static JPanel panel;
+	static public boolean InitAccept = false;
+	static public String spriteName;
+	static public boolean CreateAccept = false;
 
 	/**
 	 * Launch the application.
@@ -38,6 +39,7 @@ public class Gui {
 				try {
 					@SuppressWarnings("unused")
 					Gui window = new Gui();
+					Gui.frame.setResizable(false);
 					Gui.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -85,14 +87,14 @@ public class Gui {
 				newProject.setModalityType(ModalityType.APPLICATION_MODAL);
 				newProject.setVisible(true);
 
-				if (InitProject.accept) {
+				if (InitAccept) {
 
 					mntmNew.setEnabled(true);
 
-					project = new SpriteAssembler(InitProject.projectName);
+					project = new SpriteAssembler(projectName);
 					addSpriteToProject(mntmNew);
-					CreateSprite.accept = false;
-					InitProject.accept = false;
+					CreateAccept = false;
+					InitAccept = false;
 				}
 			}
 		});
@@ -123,12 +125,12 @@ public class Gui {
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
 		frame.getContentPane().add(panel);
-		panel.setLayout(new BorderLayout(0, 0));
-		GridBagLayout gbl_panel = new GridBagLayout();
+		panel.setLayout(null);
+		/*GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] { 0 };
 		gbl_panel.rowHeights = new int[] { 0 };
 		gbl_panel.columnWeights = new double[] { Double.MIN_VALUE };
-		gbl_panel.rowWeights = new double[] { Double.MIN_VALUE };
+		gbl_panel.rowWeights = new double[] { Double.MIN_VALUE };*/
 
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fc.setMultiSelectionEnabled(true);
@@ -145,11 +147,11 @@ public class Gui {
 	 */
 	private void addSpriteToProject(final JMenuItem mntmNew) {
 		CreateSprite newSprite = new CreateSprite();
-
+		System.out.println("TESTE1");
 		newSprite.setModalityType(ModalityType.APPLICATION_MODAL);
 		newSprite.setVisible(true);
 
-		if (CreateSprite.accept) {
+		if (CreateAccept) {
 			int returnVal = fc.showOpenDialog(mntmNew);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -158,7 +160,7 @@ public class Gui {
 				Sprite animation = null;
 				try {
 					animation = new Sprite(files.clone(),
-							CreateSprite.spriteName);
+							spriteName);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -166,26 +168,33 @@ public class Gui {
 
 				project.addSprite(animation);
 				for (int i = 0; i < animation.getImages().size(); i++) {
-					JLabel image = new JLabel(animation.getImages().get(i)
-							.getImage());
-					image.setSize(animation.getImages().get(i).getImage()
-							.getIconHeight(), animation.getImages().get(i)
-							.getImage().getIconWidth());
-					if (animation.getImages().get(i).getImage().getIconHeight() > highestHeightInRow) {
+
+					animation
+							.getImages()
+							.get(i)
+							.setSize(
+									animation.getImages().get(i).getImage()
+											.getHeight(null),
+									animation.getImages().get(i).getImage()
+											.getWidth(null));
+
+					if (animation.getImages().get(i).getImage().getHeight(null) > highestHeightInRow) {
 						highestHeightInRow = animation.getImages().get(i)
-								.getImage().getIconHeight();
+								.getImage().getHeight(null);
 					}
-					image.setLocation(x, y);
+
+					animation.getImages().get(i).setLocation(x, y);
 					if (x
 							+ animation.getImages().get(i).getImage()
-									.getIconWidth() > panel.getWidth()) {
+									.getWidth(null) > panel.getWidth()) {
 						x = 0;
 						y += highestHeightInRow;
 						highestHeightInRow = 0;
-						image.setLocation(x, y);
+						animation.getImages().get(i).setLocation(x, y);
 					}
-					x += animation.getImages().get(i).getImage().getIconWidth();
-					panel.add(image);
+					x += animation.getImages().get(i).getImage().getWidth(null);
+
+					panel.add(animation.getImages().get(i));
 					panel.revalidate();
 				}
 				panel.repaint();

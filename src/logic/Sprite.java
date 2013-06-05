@@ -6,32 +6,32 @@ import java.util.ArrayList;
 
 public class Sprite {
 
-	private ArrayList<SpriteElementBackup> images;
+	private ArrayList<SpriteElement> images;
 	private ArrayList<Integer> breaks;
 	private String name;
 
 
 	public Sprite(File[] files, String name) throws IOException {
 		
-		images = new ArrayList<SpriteElementBackup>();
+		images = new ArrayList<SpriteElement>();
 		breaks = new ArrayList<Integer>();
 		
 		System.out.println(files.length);
 		for (int i=0; i<files.length; i++) {
 			
-			images.add(new SpriteElementBackup(files[i]));
+			images.add(new SpriteElement(files[i]));
 		}
 		
 		this.name = name;
 	}
 
 
-	public ArrayList<SpriteElementBackup> getImages() {
+	public ArrayList<SpriteElement> getImages() {
 		return images;
 	}
 
 
-	public void setImages(ArrayList<SpriteElementBackup> images) {
+	public void setImages(ArrayList<SpriteElement> images) {
 		this.images = images;
 	}
 

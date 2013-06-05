@@ -19,8 +19,6 @@ public class CreateSprite extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtDefault;
-	static public String spriteName;
-	static public boolean accept = false;
 
 	/**
 	 * Launch the application.
@@ -73,8 +71,8 @@ public class CreateSprite extends JDialog {
 				okButton.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						spriteName = txtDefault.getText();
-						accept = true;
+						Gui.spriteName = txtDefault.getText();
+						Gui.CreateAccept = true;
 						dispose();
 					}
 				});

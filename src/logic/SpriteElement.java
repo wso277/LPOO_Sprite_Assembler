@@ -17,14 +17,14 @@ package logic;
  *  under the License.
  */
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 /**
  * This is an extension of Draggable Component with a custom Image for
@@ -36,15 +36,22 @@ import java.io.File;
 public class SpriteElement extends DraggableComponent implements ImageObserver {
 	private static final long serialVersionUID = 1L;
 	protected Image image;
-	private boolean autoSize = false;
 	private File file;
 
-	private Dimension autoSizeDimension = new Dimension(0, 0);
 
-	public SpriteElement() {
+	public SpriteElement(File file) {
 		super();
-		setLayout(null);
-		setBackground(Color.black);
+		/*setLayout(null);
+		setBackground(Color.black);*/
+		this.file = file;
+		System.out.println(this.file.getAbsolutePath());
+		//setImage(this.file.getAbsolutePath());
+		try {
+			this.image = ImageIO.read(this.file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public File getFile() {
@@ -67,36 +74,11 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.clearRect(0, 0, getWidth(), getHeight());
 		if (image != null) {
-			setAutoSizeDimension();
 			g2d.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		} else {
+		}/* else {
 			g2d.setColor(getBackground());
 			g2d.fillRect(0, 0, getWidth(), getHeight());
-		}
-	}
-
-	/**
-	 * It is a simple tecnique to retrieve dimensions of Image, preserving ratio
-	 * w/h of image and make a best matching on the parent box.
-	 * 
-	 * @param source
-	 * @param dest
-	 * @return
-	 */
-	private Dimension adaptDimension(Dimension source, Dimension dest) {
-		int sW = source.width;
-		int sH = source.height;
-		int dW = dest.width;
-		int dH = dest.height;
-		double ratio = ((double) sW) / ((double) sH);
-		if (sW >= sH) {
-			sW = dW;
-			sH = (int) (sW / ratio);
-		} else {
-			sH = dH;
-			sW = (int) (sH * ratio);
-		}
-		return new Dimension(sW, sH);
+		}*/
 	}
 
 	/**
@@ -121,63 +103,9 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 			int h) {
 		if (infoflags == ALLBITS) {
 			repaint();
-			setAutoSizeDimension();
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * This method is used to resize component considering w/h ratio of image.
-	 */
-	private void setAutoSizeDimension() {
-		if (!autoSize) {
-			return;
-		}
-		if (image != null) {
-			if (image.getHeight(null) == 0 || getHeight() == 0) {
-				return;
-			}
-			if ((getWidth() / getHeight()) == (image.getWidth(null) / (image
-					.getHeight(null)))) {
-				return;
-			}
-			autoSizeDimension = adaptDimension(
-					new Dimension(image.getWidth(null), image.getHeight(null)),
-					this.getSize());
-			setSize(autoSizeDimension.width, autoSizeDimension.height);
-		}
-	}
-
-	/**
-	 * It is used to Resize component when it has an AutoSize value setted on
-	 * TRUE
-	 * 
-	 * @param pixels
-	 */
-	public void grow(int pixels) {
-		double ratio = getWidth() / getHeight();
-		setSize(getSize().width + pixels,
-				(int) (getSize().height + (pixels / ratio)));
-	}
-
-	/**
-	 * Get the value of autoSize
-	 * 
-	 * @return the value of autoSize
-	 */
-	public boolean isAutoSize() {
-		return autoSize;
-	}
-
-	/**
-	 * Set the value of autoSize
-	 * 
-	 * @param autoSize
-	 *            new value of autoSize
-	 */
-	public void setAutoSize(boolean autoSize) {
-		this.autoSize = autoSize;
 	}
 
 	/**
@@ -190,17 +118,6 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 	}
 
 	/**
-	 * Set the value of image by String name. Use ToolKit to create image from
-	 * file. use setImage(Image image) if you just have an image.
-	 * 
-	 * @param image
-	 *            fileName of image
-	 */
-	public void setImage(String image) {
-		setImage(Toolkit.getDefaultToolkit().getImage(image));
-	}
-
-	/**
 	 * Set the value of image
 	 * 
 	 * @param image
@@ -209,6 +126,5 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 	public void setImage(Image image) {
 		this.image = image;
 		repaint();
-		setAutoSizeDimension();
 	}
 }
