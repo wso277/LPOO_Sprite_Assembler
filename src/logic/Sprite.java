@@ -9,9 +9,10 @@ public class Sprite {
 	private ArrayList<SpriteElement> images;
 	private ArrayList<Integer> breaks;
 	private String name;
+	Boolean canLoop = true;
+	private int fps;
 
-
-	public Sprite(File[] files, String name) throws IOException {
+	public Sprite(File[] files, String name, boolean canLoop, int fps) throws IOException {
 		
 		images = new ArrayList<SpriteElement>();
 		breaks = new ArrayList<Integer>();
@@ -21,8 +22,9 @@ public class Sprite {
 			
 			images.add(new SpriteElement(files[i]));
 		}
-		
+		this.canLoop = canLoop;
 		this.name = name;
+		this.setFps(fps);
 	}
 
 
@@ -53,6 +55,26 @@ public class Sprite {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	public boolean getCanLoop() {
+	    return canLoop;
+	}
+
+
+	public void setCanLoop(boolean canLoop) {
+	    this.canLoop = canLoop;
+	}
+
+
+	public int getFps() {
+	    return fps;
+	}
+
+
+	public void setFps(int fps) {
+	    this.fps = fps;
 	}
 	
 	

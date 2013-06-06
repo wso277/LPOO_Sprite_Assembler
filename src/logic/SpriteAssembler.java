@@ -20,7 +20,7 @@ public class SpriteAssembler {
 	}
 	
 	public SpriteAssembler(String name, int width, int height) {
-		this.name = name;
+		this.setName(name);
 		sprites = new ArrayList<Sprite>();
 		
 		
@@ -38,5 +38,21 @@ public class SpriteAssembler {
 	
 	public void addSprite(Sprite s1) {
 		sprites.add(s1);
+	}
+
+	public String getName() {
+	    return name;
+	}
+
+	public void setName(String name) {
+	    this.name = name;
+	}
+
+	public ArrayList<Sprite> getSprites() {
+	    return sprites;
+	}
+
+	public void setSprites(ArrayList<Sprite> sprites) {
+	    this.sprites = sprites;
 	}
 }

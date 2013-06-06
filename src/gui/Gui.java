@@ -2,11 +2,9 @@ package gui;
 
 import java.awt.Dialog.ModalityType;
 import java.awt.EventQueue;
-import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -16,13 +14,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import logic.Exporter;
 import logic.Sprite;
 import logic.SpriteAssembler;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 
 public class Gui {
     int x = 0, y = 0, highestHeightInRow = 0;
@@ -31,13 +27,15 @@ public class Gui {
     static String projectName;
     static private SpriteAssembler project;
 
-    static JPanel panel;
+    private static JPanel panel;
     static public boolean InitAccept = false;
     static public String spriteName;
     static public boolean CreateAccept = false;
     static public int spriteMinSize;
     static public int panelHeight;
     static public int panelWidth;
+    protected static Boolean spriteIsLoopable;
+    protected static int fps;
 
     /**
      * Launch the application.
@@ -78,7 +76,7 @@ public class Gui {
 	JMenu mnFile = new JMenu("File");
 	menuBar.add(mnFile);
 
-	panel = new JPanel();
+	setPanel(new JPanel());
 
 	final JMenuItem mntmNew = new JMenuItem("New Sprite");
 	mntmNew.setEnabled(false);
@@ -117,17 +115,7 @@ public class Gui {
 	JMenuItem mntmImport = new JMenuItem("Export Project");
 	mntmImport.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
-		BufferedImage bi = new BufferedImage(panel.getSize().width,
-			panel.getSize().height, BufferedImage.TYPE_INT_ARGB);
-		Graphics g = bi.createGraphics();
-		panel.paint(g); // this == JComponent
-		g.dispose();
-		try {
-		    File png = new File("test.png");
-		    ImageIO.write(bi, "png", png);
-		    System.out.println(png.getPath());
-		} catch (Exception ex) {
-		}
+		Exporter.export();
 	    }
 	});
 	mnFile.add(mntmImport);
@@ -149,8 +137,8 @@ public class Gui {
 	mnHelp.add(mntmAbout);
 	frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
-	frame.getContentPane().add(panel);
-	panel.setLayout(null);
+	frame.getContentPane().add(getPanel());
+	getPanel().setLayout(null);
 	/*
 	 * GridBagLayout gbl_panel = new GridBagLayout(); gbl_panel.columnWidths
 	 * = new int[] { 0 }; gbl_panel.rowHeights = new int[] { 0 };
@@ -185,7 +173,7 @@ public class Gui {
 
 		Sprite animation = null;
 		try {
-		    animation = new Sprite(files.clone(), spriteName);
+		    animation = new Sprite(files.clone(), spriteName, spriteIsLoopable, fps);
 		} catch (IOException e1) {
 		    // TODO Auto-generated catch block
 		    e1.printStackTrace();
@@ -209,7 +197,7 @@ public class Gui {
 
 		    animation.getImages().get(i).setLocation(x, y);
 		    if (x + animation.getImages().get(i).getXsquares()
-			    * spriteMinSize > panel.getWidth()) {
+			    * spriteMinSize > getPanel().getWidth()) {
 			x = 0;
 			y += highestHeightInRow * spriteMinSize;
 			highestHeightInRow = 0;
@@ -228,12 +216,20 @@ public class Gui {
 		    x += animation.getImages().get(i).getXsquares()
 			    * spriteMinSize;
 
-		    panel.add(animation.getImages().get(i));
-		    panel.revalidate();
+		    getPanel().add(animation.getImages().get(i));
+		    getPanel().revalidate();
 		}
-		panel.repaint();
+		getPanel().repaint();
 	    }
 	}
+    }
+
+    public static JPanel getPanel() {
+	return panel;
+    }
+
+    public static void setPanel(JPanel panel) {
+	Gui.panel = panel;
     }
 
     static public SpriteAssembler getProject() {

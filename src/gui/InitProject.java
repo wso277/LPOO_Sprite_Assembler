@@ -116,7 +116,7 @@ public class InitProject extends JDialog {
 				Gui.projectName = textProjectName.getText();
 				Gui.InitAccept = true;
 
-				Gui.panel.setSize((Integer) widthSpinner.getValue(),
+				Gui.getPanel().setSize((Integer) widthSpinner.getValue(),
 						(Integer) heightSpinner.getValue());
 				Gui.frame.setSize((Integer) widthSpinner.getValue(),
 						(Integer) heightSpinner.getValue() + 45);
