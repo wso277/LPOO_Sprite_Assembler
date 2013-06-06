@@ -195,6 +195,7 @@ public class Gui {
 			highestHeightInRow = 0;
 			animation.getImages().get(i).setLocation(x, y);
 		    }
+		    animation.getImages().get(i).setMatrixPos(x / spriteMinSize, y / spriteMinSize);
 		    for (int wsquare = 0; wsquare < animation.getImages()
 			    .get(i).getXsquares(); wsquare++) {
 			for (int hsquare = 0; hsquare < animation.getImages()
@@ -210,13 +211,6 @@ public class Gui {
 		    panel.revalidate();
 		}
 		panel.repaint();
-		for (int j = 0; j < Gui.getProject().getFilled().length; j++) {
-		    for (int i = 0; i < Gui.getProject().getFilled()[j].length; i++) {
-			System.out.print(Gui.getProject().getFilled()[i][j]);
-			System.out.print(" ");
-		    }
-		    System.out.println();
-		}
 	    }
 	}
     }

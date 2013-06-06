@@ -39,11 +39,6 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 	private static final long serialVersionUID = 1L;
 	protected Image image;
 	private File file;
-	private int xsquares;
-	private int ysquares;
-	
-
-
 	public SpriteElement(File file) {
 		super();
 		/*setLayout(null);
@@ -60,22 +55,6 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 	
 		xsquares = (int)Math.ceil((double)this.image.getWidth(this) / (double)Gui.spriteMinSize);
 		ysquares = (int)Math.ceil((double)this.image.getHeight(this) / (double)Gui.spriteMinSize);
-	}
-
-	public int getXsquares() {
-		return xsquares;
-	}
-
-	public void setXsquares(int xsquares) {
-		this.xsquares = xsquares;
-	}
-
-	public int getYsquares() {
-		return ysquares;
-	}
-
-	public void setYsquares(int ysquares) {
-		this.ysquares = ysquares;
 	}
 
 	public File getFile() {

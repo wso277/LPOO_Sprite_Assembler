@@ -35,7 +35,10 @@ public class DraggableComponent extends JComponent {
     private boolean draggable = true;
 
     /** Position of the image */
+    private Point matrixPos;
     private Point pos;
+    Point validPos;
+    boolean fits;
 
     /** Default mouse cursor for dragging action */
     protected Cursor draggingCursor = Cursor
@@ -71,6 +74,8 @@ public class DraggableComponent extends JComponent {
     }
 
     boolean tmp = false;
+    protected int xsquares;
+    protected int ysquares;
 
     /**
      * Add Mouse Motion Listener with drag function
@@ -100,16 +105,93 @@ public class DraggableComponent extends JComponent {
 			/ (double) Gui.spriteMinSize);
 		int widthCells = (int) Math.ceil((double) getWidth()
 			/ (double) Gui.spriteMinSize);
-		boolean fits = true;
-		Point matrixPos = new Point(pos.x / Gui.spriteMinSize, pos.y
+		fits = true;
+		matrixPos = new Point(pos.x / Gui.spriteMinSize, pos.y
 			/ Gui.spriteMinSize);
 
-		if (pos.x < 0 || pos.y < 0 || 
-			matrixPos.x + (int)Math.ceil((double)getWidth()/(double)Gui.spriteMinSize) > Gui.getProject().getFilled().length ||
-			matrixPos.y + (int)Math.ceil((double)getHeight()/(double)Gui.spriteMinSize) > Gui.getProject().getFilled()[0].length) {
+		if (pos.x < 0
+			|| pos.y < 0
+			|| matrixPos.x
+				+ (int) Math.ceil((double) getWidth()
+					/ (double) Gui.spriteMinSize) > Gui
+				.getProject().getFilled().length
+			|| matrixPos.y
+				+ (int) Math.ceil((double) getHeight()
+					/ (double) Gui.spriteMinSize) > Gui
+				.getProject().getFilled()[0].length) {
 		    fits = false;
 		}
 
+		if (fits) {
+		    for (int i = 0; i < heightCells; i++) {
+			for (int j = 0; j < widthCells; j++) {
+			    if (Gui.getProject().getFilled()[matrixPos.x + i][matrixPos.y
+				    + j] == 1) {
+				fits = false;
+				break;
+			    }
+			}
+		    }
+		}
+		if (fits) {
+		    validPos.x = matrixPos.x;
+		    validPos.y = matrixPos.y;
+		    setLocation(
+			    (int) Math.floor((double) pos.x
+				    / (double) Gui.spriteMinSize)
+				    * Gui.spriteMinSize,
+			    (int) Math.floor((double) pos.y
+				    / (double) Gui.spriteMinSize)
+				    * Gui.spriteMinSize);
+		}
+
+		// Change Z-Buffer if it is "overbearing"
+		if (overbearing) {
+		    getParent().setComponentZOrder(handle, 0);
+		    repaint();
+		}
+	    }
+	});
+
+	addMouseListener(new MouseAdapter() {
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+		validPos = new Point();
+		validPos.x = matrixPos.x;
+		validPos.y = matrixPos.y;
+
+		// Cleaning previous position
+		for (int i = 0; i < getXsquares(); i++) {
+		    for (int j = 0; j < getYsquares(); j++) {
+			Gui.getProject().getFilled()[validPos.x + i][validPos.y
+				+ j] = 0;
+		    }
+		}
+
+		Point parentOnScreen = getParent().getLocationOnScreen();
+		Point mouseOnScreen = e.getLocationOnScreen();
+		pos = new Point(mouseOnScreen.x - parentOnScreen.x,
+			mouseOnScreen.y - parentOnScreen.y);
+		int heightCells = (int) Math.ceil((double) getHeight()
+			/ (double) Gui.spriteMinSize);
+		int widthCells = (int) Math.ceil((double) getWidth()
+			/ (double) Gui.spriteMinSize);
+		fits = true;
+		matrixPos = new Point(pos.x / Gui.spriteMinSize, pos.y
+			/ Gui.spriteMinSize);
+
+		if (pos.x < 0
+			|| pos.y < 0
+			|| matrixPos.x
+				+ (int) Math.ceil((double) getWidth()
+					/ (double) Gui.spriteMinSize) > Gui
+				.getProject().getFilled().length
+			|| matrixPos.y
+				+ (int) Math.ceil((double) getHeight()
+					/ (double) Gui.spriteMinSize) > Gui
+				.getProject().getFilled()[0].length) {
+		    fits = false;
+		}
 		if (fits) {
 		    for (int i = 0; i < heightCells; i++) {
 			for (int j = 0; j < widthCells; j++) {
@@ -131,48 +213,21 @@ public class DraggableComponent extends JComponent {
 				    * Gui.spriteMinSize);
 		}
 
-		// Change Z-Buffer if it is "overbearing"
-		if (overbearing) {
-		    getParent().setComponentZOrder(handle, 0);
-		    repaint();
-		}
 	    }
-	});
 
-	addMouseListener(new MouseAdapter() {
-	    @Override
-	    public void mousePressed(MouseEvent e) {
-		Point parentOnScreen = getParent().getLocationOnScreen();
-		Point mouseOnScreen = e.getLocationOnScreen();
-		pos = new Point(mouseOnScreen.x - parentOnScreen.x,
-			mouseOnScreen.y - parentOnScreen.y);
-		int heightCells = (int) Math.ceil((double) getHeight()
-			/ (double) Gui.spriteMinSize);
-		int widthCells = (int) Math.ceil((double) getWidth()
-			/ (double) Gui.spriteMinSize);
-		boolean fits = true;
-		Point matrixPos = new Point(pos.x / Gui.spriteMinSize, pos.y
-			/ Gui.spriteMinSize);
-
-		for (int i = 0; i < heightCells; i++) {
-		    for (int j = 0; j < widthCells; j++) {
-			if (Gui.getProject().getFilled()[matrixPos.x + i][matrixPos.y
-				+ j] == 1) {
-			    fits = false;
-			    break;
-			}
+	    public void mouseReleased(MouseEvent e) {
+		if (!fits) {
+		    matrixPos.x = validPos.x;
+		    matrixPos.y = validPos.y;
+		    setLocation(validPos.x * Gui.spriteMinSize, validPos.y
+			    * Gui.spriteMinSize);
+		}
+		for (int i = 0; i < getXsquares(); i++) {
+		    for (int j = 0; j < getYsquares(); j++) {
+			Gui.getProject().getFilled()[matrixPos.x + i][matrixPos.y
+				+ j] = 1;
 		    }
 		}
-		if (fits) {
-		    setLocation(
-			    (int) Math.floor((double) pos.x
-				    / (double) Gui.spriteMinSize)
-				    * Gui.spriteMinSize,
-			    (int) Math.floor((double) pos.y
-				    / (double) Gui.spriteMinSize)
-				    * Gui.spriteMinSize);
-		}
-
 	    }
 	});
     }
@@ -248,5 +303,29 @@ public class DraggableComponent extends JComponent {
      */
     public void setOverbearing(boolean overbearing) {
 	this.overbearing = overbearing;
+    }
+
+    public Point getMatrixPos() {
+	return matrixPos;
+    }
+
+    public void setMatrixPos(int x, int y) {
+	this.matrixPos = new Point(x, y);
+    }
+
+    public int getXsquares() {
+	return xsquares;
+    }
+
+    public void setXsquares(int xsquares) {
+	this.xsquares = xsquares;
+    }
+
+    public int getYsquares() {
+	return ysquares;
+    }
+
+    public void setYsquares(int ysquares) {
+	this.ysquares = ysquares;
     }
 }
