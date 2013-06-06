@@ -19,6 +19,8 @@ package logic;
 
 import gui.Gui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -39,22 +41,26 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 	private static final long serialVersionUID = 1L;
 	protected Image image;
 	private File file;
+
 	public SpriteElement(File file) {
 		super();
-		/*setLayout(null);
-		setBackground(Color.black);*/
+		/*
+		 * setLayout(null); setBackground(Color.black);
+		 */
 		this.file = file;
 		System.out.println(this.file.getAbsolutePath());
-		//setImage(this.file.getAbsolutePath());
+		// setImage(this.file.getAbsolutePath());
 		try {
 			this.image = ImageIO.read(this.file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
-		xsquares = (int)Math.ceil((double)this.image.getWidth(this) / (double)Gui.spriteMinSize);
-		ysquares = (int)Math.ceil((double)this.image.getHeight(this) / (double)Gui.spriteMinSize);
+
+		xsquares = (int) Math.ceil((double) this.image.getWidth(this)
+				/ (double) Gui.spriteMinSize);
+		ysquares = (int) Math.ceil((double) this.image.getHeight(this)
+				/ (double) Gui.spriteMinSize);
 	}
 
 	public File getFile() {
@@ -76,12 +82,12 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.clearRect(0, 0, getWidth(), getHeight());
-		if (image != null) {
+		if (fits) {
 			g2d.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		}/* else {
-			g2d.setColor(getBackground());
+		} else {
+			g2d.setColor(Color.RED);
 			g2d.fillRect(0, 0, getWidth(), getHeight());
-		}*/
+		}
 	}
 
 	/**
