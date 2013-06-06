@@ -2,9 +2,11 @@ package gui;
 
 import java.awt.Dialog.ModalityType;
 import java.awt.EventQueue;
+import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -18,6 +20,9 @@ import logic.Sprite;
 import logic.SpriteAssembler;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class Gui {
     int x = 0, y = 0, highestHeightInRow = 0;
@@ -110,6 +115,21 @@ public class Gui {
 	mnFile.add(mntmExport);
 
 	JMenuItem mntmImport = new JMenuItem("Export Project");
+	mntmImport.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+		BufferedImage bi = new BufferedImage(panel.getSize().width,
+			panel.getSize().height, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = bi.createGraphics();
+		panel.paint(g); // this == JComponent
+		g.dispose();
+		try {
+		    File png = new File("test.png");
+		    ImageIO.write(bi, "png", png);
+		    System.out.println(png.getPath());
+		} catch (Exception ex) {
+		}
+	    }
+	});
 	mnFile.add(mntmImport);
 
 	JMenuItem mntmClose = new JMenuItem("Close");
@@ -195,7 +215,8 @@ public class Gui {
 			highestHeightInRow = 0;
 			animation.getImages().get(i).setLocation(x, y);
 		    }
-		    animation.getImages().get(i).setMatrixPos(x / spriteMinSize, y / spriteMinSize);
+		    animation.getImages().get(i)
+			    .setMatrixPos(x / spriteMinSize, y / spriteMinSize);
 		    for (int wsquare = 0; wsquare < animation.getImages()
 			    .get(i).getXsquares(); wsquare++) {
 			for (int hsquare = 0; hsquare < animation.getImages()
