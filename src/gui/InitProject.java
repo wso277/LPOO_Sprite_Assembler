@@ -162,6 +162,9 @@ public class InitProject extends JDialog {
 					* (Integer) spinner.getValue();
 
 			heightSpinner.setValue(value);
+			
+			
+			
 			break;
 		case 1:
 			value = (Integer) heightSpinner.getValue()

@@ -100,6 +100,8 @@ public class Gui {
 
 		    project = new SpriteAssembler(projectName, panelWidth,
 			    panelHeight);
+		    panel.removeAll();
+		    panel.revalidate();
 		    addSpriteToProject(mntmNew);
 		    CreateAccept = false;
 		    InitAccept = false;
@@ -139,12 +141,6 @@ public class Gui {
 
 	frame.getContentPane().add(getPanel());
 	getPanel().setLayout(null);
-	/*
-	 * GridBagLayout gbl_panel = new GridBagLayout(); gbl_panel.columnWidths
-	 * = new int[] { 0 }; gbl_panel.rowHeights = new int[] { 0 };
-	 * gbl_panel.columnWeights = new double[] { Double.MIN_VALUE };
-	 * gbl_panel.rowWeights = new double[] { Double.MIN_VALUE };
-	 */
 
 	fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 	fc.setMultiSelectionEnabled(true);
@@ -186,15 +182,15 @@ public class Gui {
 			    .get(i)
 			    .setSize(
 				    animation.getImages().get(i).getImage()
-					    .getHeight(null),
+					    .getWidth(null),
 				    animation.getImages().get(i).getImage()
-					    .getWidth(null));
+					    .getHeight(null));
 
 		    if (animation.getImages().get(i).getYsquares() > highestHeightInRow) {
 			highestHeightInRow = animation.getImages().get(i)
 				.getYsquares();
-		    }
-
+		    }		    
+		    
 		    animation.getImages().get(i).setLocation(x, y);
 		    if (x + animation.getImages().get(i).getXsquares()
 			    * spriteMinSize > getPanel().getWidth()) {
