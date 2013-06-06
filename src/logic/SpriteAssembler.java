@@ -14,27 +14,23 @@ public class SpriteAssembler {
 		return filled;
 	}
 
-	public void setFilled(int h, int w, int mode) {
+	public void setFilled(int w, int h, int mode) {
 		
-		filled[h][w] = mode;
+		filled[w][h] = mode;
 	}
-
-	private int panelHeight;
-	private int panelWidth;
 	
-	public SpriteAssembler(String name, int height, int width) {
+	public SpriteAssembler(String name, int width, int height) {
 		this.name = name;
 		sprites = new ArrayList<Sprite>();
 		
 		
-		panelHeight = height;
-		panelWidth = width;
+		height = height / Gui.spriteMinSize;
+		width = width / Gui.spriteMinSize;
 		
-		filled = new Integer[panelHeight][panelWidth];
+		filled = new Integer[width][height];
 		
-		for (int i=0; i < panelHeight; i++) {
-			for (int j = 0; j < panelWidth; j++) {
-				
+		for (int i=0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
 				filled[i][j] = 0;
 			}
 		}

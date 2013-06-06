@@ -25,7 +25,6 @@ import java.awt.Image;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
-import java.math.MathContext;
 
 import javax.imageio.ImageIO;
 

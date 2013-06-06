@@ -13,8 +13,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
@@ -125,13 +123,6 @@ public class InitProject extends JDialog {
 				Gui.spriteMinSize = (Integer)spinner.getValue();
 				Gui.panelHeight = (Integer)heightSpinner.getValue();
 				Gui.panelWidth = (Integer)widthSpinner.getValue();
-
-				System.out.println("TESTE");
-				System.out.println((Integer) widthSpinner.getValue());
-				System.out.println((Integer) heightSpinner.getValue());
-				System.out.println(Gui.panel.getHeight());
-				System.out.println(Gui.panel.getWidth());
-				// Gui.frame.setResizable(false);
 
 				dispose();
 
