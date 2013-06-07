@@ -18,6 +18,7 @@ package logic;
  */
 
 import gui.Gui;
+import gui.PreviewAnimation;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -175,7 +176,8 @@ public class DraggableComponent extends JComponent {
 			public void mouseReleased(MouseEvent e) {
 				
 				if (!fits) {
-					setLocation(validPos.x,validPos.y);
+					fits =true;
+					setLocation(validPos.x * Gui.spriteMinSize,validPos.y * Gui.spriteMinSize);
 				}
 				
 				for (int i = 0; i < getXsquares(); i++) {
@@ -188,7 +190,38 @@ public class DraggableComponent extends JComponent {
 				delta.x = deltax;
 				delta.y = deltay;
 			}
+			
+			public void mouseClicked(MouseEvent e) {
+				if (e.getButton() == MouseEvent.BUTTON3) {
+					
+					int i = findSprite();
+					
+					PreviewAnimation preview = new PreviewAnimation(Gui.getProject().getSprites().get(i));
+					
+					preview.setVisible(true);
+				}
+			}
 		});
+	}
+	
+	public int findSprite() {
+		
+		int i;
+		boolean found = false;
+		
+		for (i = 0; i < Gui.getProject().getSprites().size();i++) {
+			for (int j=0; j < Gui.getProject().getSprites().get(i).getImages().size(); j++) {
+				if (Gui.getProject().getSprites().get(i).getImages().get(j) == this) {
+					found = true;
+					break;
+				}
+			}
+			if (found) {
+				break;
+			}
+		}
+		
+		return i;
 	}
 
 	/**
@@ -292,3 +325,4 @@ public class DraggableComponent extends JComponent {
 		this.ysquares = ysquares;
 	}
 }
+
