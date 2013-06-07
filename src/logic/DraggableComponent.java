@@ -120,15 +120,16 @@ public class DraggableComponent extends JComponent {
 
 				for (int i = 0; i < widthCells; i++) {
 					for (int j = 0; j < heightCells; j++) {
-						if (Gui.getProject().getFilled().length <= (deltax + delta.x + i)
+						if (Gui.getProject().getFilled().length <= (deltax
+								+ delta.x + i)
 								|| (deltax + delta.x + i) < 0
 								|| Gui.getProject().getFilled()[validPos.x].length <= (deltay
 										+ delta.y + j)
 								|| (deltay + delta.y + j) < 0
 								||
 
-								Gui.getProject().getFilled()[deltax + delta.x + i][deltay
-										+ delta.y + j] == 1) {
+								Gui.getProject().getFilled()[deltax + delta.x
+										+ i][deltay + delta.y + j] == 1) {
 							fits = false;
 							break;
 						}
@@ -138,14 +139,14 @@ public class DraggableComponent extends JComponent {
 					validPos.x = deltax + delta.x;
 					validPos.y = deltay + delta.y;
 				}
-				setLocation((deltax + delta.x) * Gui.spriteMinSize, (deltay + delta.y)
-						* Gui.spriteMinSize);
-				
-                //Change Z-Buffer if it is "overbearing"
-                if (overbearing) {
-                    getParent().setComponentZOrder(handle, 0);
-                    repaint();
-                }
+				setLocation((deltax + delta.x) * Gui.spriteMinSize,
+						(deltay + delta.y) * Gui.spriteMinSize);
+
+				// Change Z-Buffer if it is "overbearing"
+				if (overbearing) {
+					getParent().setComponentZOrder(handle, 0);
+					repaint();
+				}
 
 			}
 		});
@@ -174,12 +175,13 @@ public class DraggableComponent extends JComponent {
 			}
 
 			public void mouseReleased(MouseEvent e) {
-				
+
 				if (!fits) {
-					fits =true;
-					setLocation(validPos.x * Gui.spriteMinSize,validPos.y * Gui.spriteMinSize);
+					fits = true;
+					setLocation(validPos.x * Gui.spriteMinSize, validPos.y
+							* Gui.spriteMinSize);
 				}
-				
+
 				for (int i = 0; i < getXsquares(); i++) {
 					for (int j = 0; j < getYsquares(); j++) {
 						Gui.getProject().getFilled()[validPos.x + i][validPos.y
@@ -190,27 +192,29 @@ public class DraggableComponent extends JComponent {
 				delta.x = deltax;
 				delta.y = deltay;
 			}
-			
+
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON3) {
-					
+
 					int i = findSprite();
-					
-					PreviewAnimation preview = new PreviewAnimation(Gui.getProject().getSprites().get(i));
-					
+
+					PreviewAnimation preview = new PreviewAnimation(Gui
+							.getProject().getSprites().get(i));
+
 					preview.setVisible(true);
 				}
 			}
 		});
 	}
-	
+
 	public int findSprite() {
-		
+
 		int i;
 		boolean found = false;
-		
-		for (i = 0; i < Gui.getProject().getSprites().size();i++) {
-			for (int j=0; j < Gui.getProject().getSprites().get(i).getImages().size(); j++) {
+
+		for (i = 0; i < Gui.getProject().getSprites().size(); i++) {
+			for (int j = 0; j < Gui.getProject().getSprites().get(i)
+					.getImages().size(); j++) {
 				if (Gui.getProject().getSprites().get(i).getImages().get(j) == this) {
 					found = true;
 					break;
@@ -220,7 +224,7 @@ public class DraggableComponent extends JComponent {
 				break;
 			}
 		}
-		
+
 		return i;
 	}
 
@@ -325,4 +329,3 @@ public class DraggableComponent extends JComponent {
 		this.ysquares = ysquares;
 	}
 }
-
