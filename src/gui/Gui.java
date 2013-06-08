@@ -28,6 +28,8 @@ public class Gui {
 	static private SpriteAssembler project;
 
 	private static JPanel panel;
+	private static JMenu mnEdit;
+	private JMenuItem mntmExport;
 	static public boolean InitAccept = false;
 	static public String spriteName;
 	static public boolean CreateAccept = false;
@@ -36,6 +38,15 @@ public class Gui {
 	static public int panelWidth;
 	protected static Boolean spriteIsLoopable;
 	protected static int fps;
+	private static int spIndex = 0;
+
+	public static int getSpIndex() {
+		return spIndex;
+	}
+
+	public static void setSpIndex(int spIndex) {
+		Gui.spIndex = spIndex;
+	}
 
 	/**
 	 * Launch the application.
@@ -77,21 +88,17 @@ public class Gui {
 		menuBar.add(mnFile);
 
 		setPanel(new JPanel());
-		
-		final JMenu mnEdit = new JMenu("Edit");
+
+		mnEdit = new JMenu("Edit Sprite");
 
 		final JMenuItem mntmNew = new JMenuItem("New Sprite");
 		mntmNew.setEnabled(false);
 		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addSpriteToProject(mntmNew);
-				if (CreateAccept) {
-					mnEdit.setEnabled(true);
-				}
 			}
 		});
-		
-		
+
 		JMenuItem mntmNewProject = new JMenuItem("New Project");
 		mntmNewProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -109,9 +116,6 @@ public class Gui {
 					panel.removeAll();
 					panel.revalidate();
 					addSpriteToProject(mntmNew);
-					if (CreateAccept) {
-						mnEdit.setEnabled(true);
-					}
 					CreateAccept = false;
 					InitAccept = false;
 				}
@@ -120,31 +124,88 @@ public class Gui {
 		mnFile.add(mntmNewProject);
 		mnFile.add(mntmNew);
 
-		JMenuItem mntmExport = new JMenuItem("Import Project");
-		mnFile.add(mntmExport);
+		JMenuItem mntmImport = new JMenuItem("Import Project");
+		mnFile.add(mntmImport);
 
-		JMenuItem mntmImport = new JMenuItem("Export Project");
-		mntmImport.addActionListener(new ActionListener() {
+		mntmExport = new JMenuItem("Export Project");
+		mntmExport.setEnabled(false);
+		mntmExport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Exporter.export();
 			}
 		});
-		mnFile.add(mntmImport);
+		mnFile.add(mntmExport);
 
 		JMenuItem mntmClose = new JMenuItem("Close");
+		mntmClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				project = null;
+				panel.removeAll();
+				panel.revalidate();
+				panel.repaint();
+				mntmNew.setEnabled(false);
+				mnEdit.setEnabled(false);
+				mntmExport.setEnabled(false);
+			}
+		});
 		mnFile.add(mntmClose);
 
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				
+				System.exit(0);
 			}
 		});
 		mnFile.add(mntmExit);
 
 		mnEdit.setEnabled(false);
 		menuBar.add(mnEdit);
+
+		JMenuItem mntmProperties = new JMenuItem("Properties");
+		mntmProperties.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				EditSprite edit = new EditSprite();
+				edit.setModalityType(ModalityType.APPLICATION_MODAL);
+				edit.setVisible(true);
+			}
+		});
+		mnEdit.add(mntmProperties);
+
+		JMenuItem mntmDelete = new JMenuItem("Delete");
+		mntmDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				for (int i = 0; i < project.getSprites().get(spIndex)
+						.getImages().size(); i++) {
+
+					for (int j = 0; j < project.getSprites().get(spIndex)
+							.getImages().get(i).getXsquares(); j++) {
+						for (int k = 0; k < project.getSprites().get(spIndex)
+								.getImages().get(i).getYsquares(); k++) {
+							project.getFilled()[project.getSprites()
+									.get(spIndex).getImages().get(i)
+									.getValidPos().x
+									+ j][project.getSprites().get(spIndex)
+									.getImages().get(i).getValidPos().y
+									+ k] = 0;
+						}
+					}
+
+					panel.remove(project.getSprites().get(spIndex).getImages()
+							.get(i));
+					mnEdit.setEnabled(false);
+				}
+
+				project.getSprites().remove(spIndex);
+				if (project.getSprites().size() == 0) {
+					mntmExport.setEnabled(false);
+				}
+				panel.revalidate();
+				panel.repaint();
+			}
+		});
+		mnEdit.add(mntmDelete);
 
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -204,9 +265,8 @@ public class Gui {
 									animation.getImages().get(i).getImage()
 											.getHeight(null));
 
-
 					for (k = 0; k < project.getFilled().length; k++) {
-						for (z = 0; z < project.getFilled()[k].length ; z++) {
+						for (z = 0; z < project.getFilled()[k].length; z++) {
 							for (int l = 0; l < animation.getImages().get(i)
 									.getXsquares(); l++) {
 								for (int m = 0; m < animation.getImages()
@@ -225,15 +285,13 @@ public class Gui {
 							}
 							if (insert) {
 								break;
-							}
-							else if (z != project.getFilled()[k].length-1){
+							} else if (z != project.getFilled()[k].length - 1) {
 								insert = true;
 							}
 						}
 						if (insert) {
 							break;
-						}
-						else if (z != project.getFilled().length-1){
+						} else if (z != project.getFilled().length - 1) {
 							insert = true;
 						}
 					}
@@ -254,7 +312,7 @@ public class Gui {
 							.get(i).getXsquares(); wsquare++) {
 						for (int hsquare = 0; hsquare < animation.getImages()
 								.get(i).getYsquares(); hsquare++) {
-							project.setFilled(k + wsquare , z + hsquare , 1);
+							project.setFilled(k + wsquare, z + hsquare, 1);
 						}
 					}
 
@@ -262,6 +320,7 @@ public class Gui {
 					getPanel().revalidate();
 				}
 				getPanel().repaint();
+				mntmExport.setEnabled(true);
 			}
 		}
 	}
@@ -276,6 +335,14 @@ public class Gui {
 
 	static public SpriteAssembler getProject() {
 		return project;
+	}
+
+	public static JMenu getMnEdit() {
+		return mnEdit;
+	}
+
+	public static void setMnEdit(JMenu mnEdit) {
+		Gui.mnEdit = mnEdit;
 	}
 
 }

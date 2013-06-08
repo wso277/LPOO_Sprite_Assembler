@@ -50,24 +50,26 @@ public class CreateSprite extends JDialog {
 			lblName.setBounds(77, 62, 45, 15);
 			contentPanel.add(lblName);
 		}
-		
+
 		JLabel lblFramesPerSecon = new JLabel("Frames Per Second:");
 		lblFramesPerSecon.setBounds(77, 89, 148, 15);
 		contentPanel.add(lblFramesPerSecon);
-		
+
 		txtDefault = new JTextField();
 		txtDefault.setText("Sprite");
 		txtDefault.setBounds(281, 60, 114, 19);
 		contentPanel.add(txtDefault);
 		txtDefault.setColumns(10);
-		
+
 		final JSpinner fpsSpinner = new JSpinner();
-		fpsSpinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+		fpsSpinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(
+				1), null, new Integer(1)));
 		fpsSpinner.setBounds(281, 87, 114, 20);
 		contentPanel.add(fpsSpinner);
-		
+
 		final JCheckBox canLoopCheckBox = new JCheckBox("Can Loop");
 		canLoopCheckBox.setBounds(77, 112, 129, 23);
+		canLoopCheckBox.setSelected(true);
 		contentPanel.add(canLoopCheckBox);
 		{
 			JPanel buttonPane = new JPanel();
@@ -83,16 +85,11 @@ public class CreateSprite extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						Gui.spriteName = txtDefault.getText();
-						if(canLoopCheckBox.isSelected())
-						{
-						    Gui.spriteIsLoopable = true; 
-						}
-						else
-						{
-						    Gui.spriteIsLoopable = true;
-						}
+
+						Gui.spriteIsLoopable = canLoopCheckBox.isSelected();
+
 						Gui.CreateAccept = true;
-						Gui.fps = (int)fpsSpinner.getValue();
+						Gui.fps = (int) fpsSpinner.getValue();
 						dispose();
 					}
 				});

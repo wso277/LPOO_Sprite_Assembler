@@ -41,6 +41,7 @@ public class DraggableComponent extends JComponent {
 	private Point mouse2;
 	private Point delta;
 	Point validPos;
+
 	boolean fits = true;
 	private int deltax;
 	private int deltay;
@@ -203,6 +204,11 @@ public class DraggableComponent extends JComponent {
 
 					preview.setVisible(true);
 				}
+				
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					Gui.getMnEdit().setEnabled(true);
+					Gui.setSpIndex(findSprite());
+				}
 			}
 		});
 	}
@@ -327,5 +333,13 @@ public class DraggableComponent extends JComponent {
 
 	public void setYsquares(int ysquares) {
 		this.ysquares = ysquares;
+	}
+	
+	public Point getValidPos() {
+		return validPos;
+	}
+
+	public void setValidPos(Point validPos) {
+		this.validPos = validPos;
 	}
 }
