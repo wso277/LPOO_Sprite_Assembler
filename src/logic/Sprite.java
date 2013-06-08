@@ -17,7 +17,6 @@ public class Sprite {
 		images = new ArrayList<SpriteElement>();
 		breaks = new ArrayList<Integer>();
 		
-		System.out.println(files.length);
 		for (int i=0; i<files.length; i++) {
 			
 			images.add(new SpriteElement(files[i]));

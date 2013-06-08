@@ -232,7 +232,6 @@ public class Gui {
 	 */
 	private void addSpriteToProject(final JMenuItem mntmNew) {
 		CreateSprite newSprite = new CreateSprite();
-		System.out.println("TESTE1");
 		newSprite.setModalityType(ModalityType.APPLICATION_MODAL);
 		newSprite.setVisible(true);
 

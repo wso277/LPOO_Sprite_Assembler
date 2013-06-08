@@ -48,7 +48,6 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 		 * setLayout(null); setBackground(Color.black);
 		 */
 		this.file = file;
-		System.out.println(this.file.getAbsolutePath());
 		// setImage(this.file.getAbsolutePath());
 		try {
 			this.image = ImageIO.read(this.file);
