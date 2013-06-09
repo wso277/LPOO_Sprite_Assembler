@@ -17,11 +17,17 @@ import java.awt.event.ActionEvent;
 import logic.Exporter;
 import logic.Sprite;
 import logic.SpriteAssembler;
+import logic.SpriteElement;
+
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
+/**
+ * Main program class. Handles all other classes and most interactions. Stores
+ * most variables.
+ */
 public class Gui {
-	int x = 0, y = 0, highestHeightInRow = 0;
+	int highestHeightInRow = 0;
 	static JFrame frame;
 	final JFileChooser fc = new JFileChooser();
 	static String projectName;
@@ -36,17 +42,12 @@ public class Gui {
 	static public int spriteMinSize;
 	static public int panelHeight;
 	static public int panelWidth;
+	int k = 0;
+	int z = 0;
 	protected static Boolean spriteIsLoopable;
 	protected static int fps;
 	private static int spIndex = 0;
-
-	public static int getSpIndex() {
-		return spIndex;
-	}
-
-	public static void setSpIndex(int spIndex) {
-		Gui.spIndex = spIndex;
-	}
+	private boolean fits = true;
 
 	/**
 	 * Launch the application.
@@ -74,7 +75,7 @@ public class Gui {
 	}
 
 	/**
-	 * Initialise the contents of the frame.
+	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -91,14 +92,16 @@ public class Gui {
 
 		mnEdit = new JMenu("Edit Sprite");
 
-		final JMenuItem mntmNew = new JMenuItem("New Sprite");
-		mntmNew.setEnabled(false);
-		mntmNew.addActionListener(new ActionListener() {
+		// Sets action for "New Sprite" menu item.
+		final JMenuItem mntmNewSprite = new JMenuItem("New Sprite");
+		mntmNewSprite.setEnabled(false);
+		mntmNewSprite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				addSpriteToProject(mntmNew);
+				addSpriteToProject(mntmNewSprite);
 			}
 		});
 
+		// Sets action for "New Project" menu item.
 		JMenuItem mntmNewProject = new JMenuItem("New Project");
 		mntmNewProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -107,26 +110,30 @@ public class Gui {
 				newProject.setModalityType(ModalityType.APPLICATION_MODAL);
 				newProject.setVisible(true);
 
+				// If ok button is pressed
 				if (InitAccept) {
+					// Now allows a new sprite to be added
+					mntmNewSprite.setEnabled(true);
 
-					mntmNew.setEnabled(true);
-
+					// Creates a new project
 					project = new SpriteAssembler(projectName, panelWidth,
 							panelHeight);
 					panel.removeAll();
 					panel.revalidate();
-					addSpriteToProject(mntmNew);
+					// Adds first sprite
+					addSpriteToProject(mntmNewSprite);
 					CreateAccept = false;
 					InitAccept = false;
 				}
 			}
 		});
 		mnFile.add(mntmNewProject);
-		mnFile.add(mntmNew);
+		mnFile.add(mntmNewSprite);
 
 		JMenuItem mntmImport = new JMenuItem("Import Project");
 		mnFile.add(mntmImport);
 
+		// Sets action for the export menu item
 		mntmExport = new JMenuItem("Export Project");
 		mntmExport.setEnabled(false);
 		mntmExport.addActionListener(new ActionListener() {
@@ -136,20 +143,22 @@ public class Gui {
 		});
 		mnFile.add(mntmExport);
 
-		JMenuItem mntmClose = new JMenuItem("Close");
-		mntmClose.addActionListener(new ActionListener() {
+		// Action for the close project menu item
+		JMenuItem mntmCloseProject = new JMenuItem("Close Project");
+		mntmCloseProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				project = null;
 				panel.removeAll();
 				panel.revalidate();
 				panel.repaint();
-				mntmNew.setEnabled(false);
+				mntmNewSprite.setEnabled(false);
 				mnEdit.setEnabled(false);
 				mntmExport.setEnabled(false);
 			}
 		});
-		mnFile.add(mntmClose);
+		mnFile.add(mntmCloseProject);
 
+		// Sets action for the exit menu item
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -161,7 +170,8 @@ public class Gui {
 		mnEdit.setEnabled(false);
 		menuBar.add(mnEdit);
 
-		JMenuItem mntmProperties = new JMenuItem("Properties");
+		// Sets action for the sprite properties menu item.
+		JMenuItem mntmProperties = new JMenuItem("Sprite Properties");
 		mntmProperties.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -172,38 +182,16 @@ public class Gui {
 		});
 		mnEdit.add(mntmProperties);
 
-		JMenuItem mntmDelete = new JMenuItem("Delete");
+		// Sets action for the delete sprite menu item.
+		JMenuItem mntmDelete = new JMenuItem("Delete Sprite");
 		mntmDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				deleteSprite();
 
-				for (int i = 0; i < project.getSprites().get(spIndex)
-						.getImages().size(); i++) {
-
-					for (int j = 0; j < project.getSprites().get(spIndex)
-							.getImages().get(i).getXsquares(); j++) {
-						for (int k = 0; k < project.getSprites().get(spIndex)
-								.getImages().get(i).getYsquares(); k++) {
-							project.getFilled()[project.getSprites()
-									.get(spIndex).getImages().get(i)
-									.getValidPos().x
-									+ j][project.getSprites().get(spIndex)
-									.getImages().get(i).getValidPos().y
-									+ k] = 0;
-						}
-					}
-
-					panel.remove(project.getSprites().get(spIndex).getImages()
-							.get(i));
-					mnEdit.setEnabled(false);
-				}
-
-				project.getSprites().remove(spIndex);
-				if (project.getSprites().size() == 0) {
-					mntmExport.setEnabled(false);
-				}
 				panel.revalidate();
 				panel.repaint();
 			}
+
 		});
 		mnEdit.add(mntmDelete);
 
@@ -217,6 +205,7 @@ public class Gui {
 		frame.getContentPane().add(getPanel());
 		getPanel().setLayout(null);
 
+		// File chooser settings
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fc.setMultiSelectionEnabled(true);
 
@@ -228,7 +217,11 @@ public class Gui {
 	}
 
 	/**
+	 * Adds a sprite to the project adding each image to the panel and filling
+	 * the matrix that indicates which positions are free
+	 * 
 	 * @param mntmNew
+	 *            New Sprite menu item button
 	 */
 	private void addSpriteToProject(final JMenuItem mntmNew) {
 		CreateSprite newSprite = new CreateSprite();
@@ -246,14 +239,13 @@ public class Gui {
 					animation = new Sprite(files.clone(), spriteName,
 							spriteIsLoopable, fps);
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
+				// Adds sprite to project
 				project.addSprite(animation);
-				boolean insert = true;
-				int k = 0;
-				int z = 0;
+
+				// Adds sprite to panel
 				for (int i = 0; i < animation.getImages().size(); i++) {
 					animation
 							.getImages()
@@ -264,39 +256,9 @@ public class Gui {
 									animation.getImages().get(i).getImage()
 											.getHeight(null));
 
-					for (k = 0; k < project.getFilled().length; k++) {
-						for (z = 0; z < project.getFilled()[k].length; z++) {
-							for (int l = 0; l < animation.getImages().get(i)
-									.getXsquares(); l++) {
-								for (int m = 0; m < animation.getImages()
-										.get(i).getYsquares(); m++) {
+					fits = checkIfFits(animation.getImages().get(i));
 
-									if (Gui.getProject().getFilled().length <= (k + l)
-											|| (k + l) < 0
-											|| Gui.getProject().getFilled()[k].length <= (z + m)
-											|| (z + m) < 0
-											|| Gui.getProject().getFilled()[k
-													+ l][z + m] == 1) {
-										insert = false;
-										break;
-									}
-								}
-							}
-							if (insert) {
-								break;
-							} else if (z != project.getFilled()[k].length - 1) {
-								insert = true;
-							}
-						}
-						if (insert) {
-							break;
-						} else if (z != project.getFilled().length - 1) {
-							insert = true;
-						}
-					}
-
-					if (insert) {
-
+					if (fits) {
 						animation
 								.getImages()
 								.get(i)
@@ -305,15 +267,7 @@ public class Gui {
 					}
 
 					animation.getImages().get(i).setMatrixPos(k, z);
-					System.out.println(k);
-					System.out.println(z);
-					for (int wsquare = 0; wsquare < animation.getImages()
-							.get(i).getXsquares(); wsquare++) {
-						for (int hsquare = 0; hsquare < animation.getImages()
-								.get(i).getYsquares(); hsquare++) {
-							project.setFilled(k + wsquare, z + hsquare, 1);
-						}
-					}
+					fillMatrix(animation, i);
 
 					getPanel().add(animation.getImages().get(i));
 					getPanel().revalidate();
@@ -321,6 +275,95 @@ public class Gui {
 				getPanel().repaint();
 				mntmExport.setEnabled(true);
 			}
+		}
+	}
+
+	/**
+	 * Fills the matrix in the specified image's position
+	 * 
+	 * @param animation
+	 *            Selected Sprite
+	 * @param i
+	 *            Image index in the SpriteElements ArrayList
+	 */
+	private void fillMatrix(Sprite animation, int i) {
+		for (int wsquare = 0; wsquare < animation.getImages().get(i)
+				.getXsquares(); wsquare++) {
+			for (int hsquare = 0; hsquare < animation.getImages().get(i)
+					.getYsquares(); hsquare++) {
+				project.setFilled(k + wsquare, z + hsquare, 1);
+			}
+		}
+	}
+
+	/**
+	 * Checks if an image fits in the project by checking all possible
+	 * positions. If it fits it stores the position in the matrix in the k and z
+	 * global variables and sets fits as true.
+	 * 
+	 * @param image
+	 *            The image to be tested
+	 * @return True if it fits. False if it doesn't.
+	 */
+	private boolean checkIfFits(SpriteElement image) {
+		boolean res = true;
+		for (k = 0; k < project.getFilled().length; k++) {
+			for (z = 0; z < project.getFilled()[k].length; z++) {
+				for (int l = 0; l < image.getXsquares(); l++) {
+					for (int m = 0; m < image.getYsquares(); m++) {
+
+						if (Gui.getProject().getFilled().length <= (k + l)
+								|| (k + l) < 0
+								|| Gui.getProject().getFilled()[k].length <= (z + m)
+								|| (z + m) < 0
+								|| Gui.getProject().getFilled()[k + l][z + m] == 1) {
+							res = false;
+							break;
+						}
+					}
+				}
+				if (res) {
+					break;
+				} else if (z != project.getFilled()[k].length - 1) {
+					res = true;
+				}
+			}
+			if (res) {
+				break;
+			} else if (z != project.getFilled().length - 1) {
+				res = true;
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * Removes a sprite identified by spIndex from the project and clears its
+	 * position in the filled matrix.
+	 */
+	private void deleteSprite() {
+		for (int i = 0; i < project.getSprites().get(spIndex).getImages()
+				.size(); i++) {
+
+			for (int j = 0; j < project.getSprites().get(spIndex).getImages()
+					.get(i).getXsquares(); j++) {
+				for (int k = 0; k < project.getSprites().get(spIndex)
+						.getImages().get(i).getYsquares(); k++) {
+					project.getFilled()[project.getSprites().get(spIndex)
+							.getImages().get(i).getValidPos().x
+							+ j][project.getSprites().get(spIndex).getImages()
+							.get(i).getValidPos().y
+							+ k] = 0;
+				}
+			}
+
+			panel.remove(project.getSprites().get(spIndex).getImages().get(i));
+			mnEdit.setEnabled(false);
+		}
+
+		project.getSprites().remove(spIndex);
+		if (project.getSprites().size() == 0) {
+			mntmExport.setEnabled(false);
 		}
 	}
 
@@ -344,4 +387,11 @@ public class Gui {
 		Gui.mnEdit = mnEdit;
 	}
 
+	public static int getSpIndex() {
+		return spIndex;
+	}
+
+	public static void setSpIndex(int spIndex) {
+		Gui.spIndex = spIndex;
+	}
 }

@@ -15,25 +15,16 @@ import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+/**
+ * Handles the window in which a sprite can be edited.
+ */
 public class EditSprite extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textField;
+	private JTextField spriteNameTxt;
 	private int index = Gui.getSpIndex();
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			EditSprite dialog = new EditSprite();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
@@ -57,20 +48,20 @@ public class EditSprite extends JDialog {
 		chckbxCanLoop.setBounds(75, 119, 129, 23);
 		contentPanel.add(chckbxCanLoop);
 		
-		textField = new JTextField();
-		textField.setBounds(249, 65, 114, 19);
-		contentPanel.add(textField);
-		textField.setColumns(10);
+		spriteNameTxt = new JTextField();
+		spriteNameTxt.setBounds(249, 65, 114, 19);
+		contentPanel.add(spriteNameTxt);
+		spriteNameTxt.setColumns(10);
 		
-		final JSpinner spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
-		spinner.setBounds(286, 92, 77, 20);
+		final JSpinner fpsSpinner = new JSpinner();
+		fpsSpinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+		fpsSpinner.setBounds(286, 92, 77, 20);
 		
-		textField.setText(Gui.getProject().getSprites().get(index).getName());
-		spinner.setValue(Gui.getProject().getSprites().get(index).getFps());
+		spriteNameTxt.setText(Gui.getProject().getSprites().get(index).getName());
+		fpsSpinner.setValue(Gui.getProject().getSprites().get(index).getFps());
 		chckbxCanLoop.setSelected(Gui.getProject().getSprites().get(index).getCanLoop());
 		
-		contentPanel.add(spinner);
+		contentPanel.add(fpsSpinner);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -81,8 +72,8 @@ public class EditSprite extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						
-						Gui.getProject().getSprites().get(index).setName(textField.getText());
-						Gui.getProject().getSprites().get(index).setFps((int)spinner.getValue());
+						Gui.getProject().getSprites().get(index).setName(spriteNameTxt.getText());
+						Gui.getProject().getSprites().get(index).setFps((int)fpsSpinner.getValue());
 						Gui.getProject().getSprites().get(index).setCanLoop(chckbxCanLoop.isSelected());
 						dispose();
 					}

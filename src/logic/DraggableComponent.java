@@ -29,6 +29,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JComponent;
 
+/**
+ * Class that handles sprite dragging and its implications. Based off the code
+ * by De Gregorio Daniele (license above)
+ */
 public class DraggableComponent extends JComponent {
 
 	private static final long serialVersionUID = 1L;
@@ -42,6 +46,8 @@ public class DraggableComponent extends JComponent {
 	private Point delta;
 	Point validPos;
 
+	protected int xsquares;
+	protected int ysquares;
 	boolean fits = true;
 	private int deltax;
 	private int deltay;
@@ -80,10 +86,6 @@ public class DraggableComponent extends JComponent {
 		}
 	}
 
-	boolean tmp = false;
-	protected int xsquares;
-	protected int ysquares;
-
 	/**
 	 * Add Mouse Motion Listener with drag function
 	 */
@@ -95,47 +97,35 @@ public class DraggableComponent extends JComponent {
 		final DraggableComponent handle = this;
 		addMouseMotionListener(new MouseAdapter() {
 
+			// If the mouse is over a sprite it changes the mouse icon to the
+			// HAND_CURSOR do indicate its "grabbable"
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
 			}
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
 
+				// Gets the window position on screen
 				Point parentOnScreen = getParent().getLocationOnScreen();
+				// Gets the mouse position on screen
 				Point mouseOnScreen = e.getLocationOnScreen();
+				// Gets the relative mouse position
 				mouse2 = new Point(mouseOnScreen.x - parentOnScreen.x,
 						mouseOnScreen.y - parentOnScreen.y);
 
+				// Gets the image position in the fillable matrix scale
 				int heightCells = (int) Math.ceil((double) getHeight()
 						/ (double) Gui.spriteMinSize);
 				int widthCells = (int) Math.ceil((double) getWidth()
 						/ (double) Gui.spriteMinSize);
 
-				fits = true;
-
+				// Gets the mouse change
 				deltax = (mouse2.x - mouse1.x) / Gui.spriteMinSize;
 				deltay = (mouse2.y - mouse1.y) / Gui.spriteMinSize;
 
-				for (int i = 0; i < widthCells; i++) {
-					for (int j = 0; j < heightCells; j++) {
-						if (Gui.getProject().getFilled().length <= (deltax
-								+ delta.x + i)
-								|| (deltax + delta.x + i) < 0
-								|| Gui.getProject().getFilled()[validPos.x].length <= (deltay
-										+ delta.y + j)
-								|| (deltay + delta.y + j) < 0
-								||
-
-								Gui.getProject().getFilled()[deltax + delta.x
-										+ i][deltay + delta.y + j] == 1) {
-							fits = false;
-							break;
-						}
-					}
-				}
+				fits = checkIfFits(heightCells, widthCells);
 				if (fits) {
 					validPos.x = deltax + delta.x;
 					validPos.y = deltay + delta.y;
@@ -150,10 +140,12 @@ public class DraggableComponent extends JComponent {
 				}
 
 			}
+
 		});
 
 		addMouseListener(new MouseAdapter() {
 			@Override
+			// Sets what happens when a sprite element is pressed on
 			public void mousePressed(MouseEvent e) {
 
 				// Cleaning previous position
@@ -164,6 +156,7 @@ public class DraggableComponent extends JComponent {
 					}
 				}
 
+				// Gets mouse relative position and sets anchor point
 				Point parentOnScreen = getParent().getLocationOnScreen();
 				Point mouseOnScreen = e.getLocationOnScreen();
 				mouse1 = new Point(mouseOnScreen.x - parentOnScreen.x,
@@ -175,8 +168,10 @@ public class DraggableComponent extends JComponent {
 
 			}
 
+			// Sets what happens when a sprite element is released
 			public void mouseReleased(MouseEvent e) {
 
+				// If it doesn't fit it is sent to the last valid position
 				if (!fits) {
 					fits = true;
 					setLocation(validPos.x * Gui.spriteMinSize, validPos.y
@@ -194,25 +189,36 @@ public class DraggableComponent extends JComponent {
 				delta.y = deltay;
 			}
 
+			// Sets what happens when a sprite element is clicked on
 			public void mouseClicked(MouseEvent e) {
+				// If it is a right click
 				if (e.getButton() == MouseEvent.BUTTON3) {
 
+					// Finds the sprite element index
 					int i = findSprite();
 
+					// Sets of a preview
 					PreviewAnimation preview = new PreviewAnimation(Gui
 							.getProject().getSprites().get(i));
-
 					preview.setVisible(true);
 				}
-				
+
+				// If it is a left click
 				if (e.getButton() == MouseEvent.BUTTON1) {
+					// Makes editing possible
 					Gui.getMnEdit().setEnabled(true);
+					// Finds out the sprite index
 					Gui.setSpIndex(findSprite());
 				}
 			}
 		});
 	}
 
+	/**
+	 * Finds the sprite being selected
+	 * 
+	 * @return Its index
+	 */
 	public int findSprite() {
 
 		int i;
@@ -232,6 +238,36 @@ public class DraggableComponent extends JComponent {
 		}
 
 		return i;
+	}
+
+	/**
+	 * Checks if an image fits the position it's currently hovering
+	 * 
+	 * @param heightCells
+	 *            The image height in matrix cells
+	 * @param widthCells
+	 *            The image width in matrix cells
+	 * @return True if it fits. False if it doesn't.
+	 */
+	private boolean checkIfFits(int heightCells, int widthCells) {
+		boolean res = true;
+		for (int i = 0; i < widthCells; i++) {
+			for (int j = 0; j < heightCells; j++) {
+				if (Gui.getProject().getFilled().length <= (deltax + delta.x + i)
+						|| (deltax + delta.x + i) < 0
+						|| Gui.getProject().getFilled()[validPos.x].length <= (deltay
+								+ delta.y + j)
+						|| (deltay + delta.y + j) < 0
+						||
+
+						Gui.getProject().getFilled()[deltax + delta.x + i][deltay
+								+ delta.y + j] == 1) {
+					res = false;
+					break;
+				}
+			}
+		}
+		return res;
 	}
 
 	/**
@@ -334,7 +370,7 @@ public class DraggableComponent extends JComponent {
 	public void setYsquares(int ysquares) {
 		this.ysquares = ysquares;
 	}
-	
+
 	public Point getValidPos() {
 		return validPos;
 	}

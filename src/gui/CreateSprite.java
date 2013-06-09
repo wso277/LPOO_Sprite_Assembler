@@ -17,24 +17,16 @@ import javax.swing.JCheckBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+
+/**
+ * Class that handles the window in which the sprite is inserted into the program
+ */
 public class CreateSprite extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField txtDefault;
+	private JTextField spriteNameTxt;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			CreateSprite dialog = new CreateSprite();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
@@ -55,11 +47,11 @@ public class CreateSprite extends JDialog {
 		lblFramesPerSecon.setBounds(77, 89, 148, 15);
 		contentPanel.add(lblFramesPerSecon);
 
-		txtDefault = new JTextField();
-		txtDefault.setText("Sprite");
-		txtDefault.setBounds(281, 60, 114, 19);
-		contentPanel.add(txtDefault);
-		txtDefault.setColumns(10);
+		spriteNameTxt = new JTextField();
+		spriteNameTxt.setText("Sprite");
+		spriteNameTxt.setBounds(281, 60, 114, 19);
+		contentPanel.add(spriteNameTxt);
+		spriteNameTxt.setColumns(10);
 
 		final JSpinner fpsSpinner = new JSpinner();
 		fpsSpinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(
@@ -84,7 +76,7 @@ public class CreateSprite extends JDialog {
 				okButton.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						Gui.spriteName = txtDefault.getText();
+						Gui.spriteName = spriteNameTxt.getText();
 
 						Gui.spriteIsLoopable = canLoopCheckBox.isSelected();
 

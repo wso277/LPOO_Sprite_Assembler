@@ -16,26 +16,16 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
+/**
+ * Class that handles the window in which the project is created.
+ */
 public class InitProject extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textProjectName;
-	final JSpinner spinner = new JSpinner();
+	final JSpinner minSpriteSizeSpinner = new JSpinner();
 	final JSpinner heightSpinner = new JSpinner();
 	final JSpinner widthSpinner = new JSpinner();
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			InitProject dialog = new InitProject();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
@@ -58,53 +48,54 @@ public class InitProject extends JDialog {
 		contentPanel.add(textProjectName);
 		textProjectName.setColumns(10);
 
+		// Adds the width spinner and initializes the valid value handler
 		final JLabel lblWidth = new JLabel("Width");
 		lblWidth.setBounds(40, 91, 57, 17);
 		contentPanel.add(lblWidth);
-
-		final JLabel lblHeight = new JLabel("Height");
-		lblHeight.setBounds(40, 120, 57, 17);
-		contentPanel.add(lblHeight);
-		widthSpinner.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				changeValue(2);
-			}
-		});
-
 		widthSpinner.setModel(new SpinnerNumberModel(new Integer(512),
 				new Integer(16), null, new Integer(16)));
 		widthSpinner.setBounds(237, 93, 114, 20);
 		contentPanel.add(widthSpinner);
-		heightSpinner.addChangeListener(new ChangeListener() {
+		widthSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				changeValue(1);
+				checkSpinnerValues(2);
 			}
 		});
 
+		// Adds the height spinner and initializes the valid value handler
+		final JLabel lblHeight = new JLabel("Height");
+		lblHeight.setBounds(40, 120, 57, 17);
+		contentPanel.add(lblHeight);
 		heightSpinner.setModel(new SpinnerNumberModel(new Integer(512),
 				new Integer(16), null, new Integer(16)));
 		heightSpinner.setBounds(237, 119, 114, 20);
 		contentPanel.add(heightSpinner);
+		heightSpinner.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				checkSpinnerValues(1);
+			}
+		});
+
+		// Adds the minimum sprite size spinner and initializes the valid value
+		// handler
+		JLabel lblSpriteLenght = new JLabel("Minimum Sprite Lenght");
+		lblSpriteLenght.setBounds(40, 149, 202, 15);
+		contentPanel.add(lblSpriteLenght);
+		minSpriteSizeSpinner.setModel(new SpinnerNumberModel(new Integer(16),
+				new Integer(16), null, new Integer(16)));
+		minSpriteSizeSpinner.setBounds(237, 147, 114, 20);
+		contentPanel.add(minSpriteSizeSpinner);
+		minSpriteSizeSpinner.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				checkSpinnerValues(0);
+			}
+		});
 
 		JLabel lblProjectProperties = new JLabel("Project Properties");
 		lblProjectProperties.setBounds(40, 12, 202, 15);
 		contentPanel.add(lblProjectProperties);
 
-		JLabel lblSpriteLenght = new JLabel("Minimum Sprite Lenght");
-		lblSpriteLenght.setBounds(40, 149, 202, 15);
-		contentPanel.add(lblSpriteLenght);
-
-		spinner.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				changeValue(0);
-			}
-		});
-
-		spinner.setModel(new SpinnerNumberModel(new Integer(16),
-				new Integer(16), null, new Integer(16)));
-		spinner.setBounds(237, 147, 114, 20);
-		contentPanel.add(spinner);
-
+		// Sets the OK and Cancel button actions
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -120,9 +111,9 @@ public class InitProject extends JDialog {
 						(Integer) heightSpinner.getValue());
 				Gui.frame.setSize((Integer) widthSpinner.getValue(),
 						(Integer) heightSpinner.getValue() + 45);
-				Gui.spriteMinSize = (Integer)spinner.getValue();
-				Gui.panelHeight = (Integer)heightSpinner.getValue();
-				Gui.panelWidth = (Integer)widthSpinner.getValue();
+				Gui.spriteMinSize = (Integer) minSpriteSizeSpinner.getValue();
+				Gui.panelHeight = (Integer) heightSpinner.getValue();
+				Gui.panelWidth = (Integer) widthSpinner.getValue();
 
 				dispose();
 
@@ -145,38 +136,39 @@ public class InitProject extends JDialog {
 		}
 	}
 
-	public void changeValue(int mode) {
+	public void checkSpinnerValues(int mode) {
 
 		int value;
 
 		switch (mode) {
+		// when minSpriteSizeSpinner is modified
 		case 0:
 			value = (Integer) widthSpinner.getValue()
-					/ (Integer) spinner.getValue()
-					* (Integer) spinner.getValue();
+					/ (Integer) minSpriteSizeSpinner.getValue()
+					* (Integer) minSpriteSizeSpinner.getValue();
 
 			widthSpinner.setValue(value);
 
 			value = (Integer) heightSpinner.getValue()
-					/ (Integer) spinner.getValue()
-					* (Integer) spinner.getValue();
+					/ (Integer) minSpriteSizeSpinner.getValue()
+					* (Integer) minSpriteSizeSpinner.getValue();
 
 			heightSpinner.setValue(value);
-			
-			
-			
+
 			break;
+		// when heightSpinner is modified
 		case 1:
 			value = (Integer) heightSpinner.getValue()
-					/ (Integer) spinner.getValue()
-					* (Integer) spinner.getValue();
+					/ (Integer) minSpriteSizeSpinner.getValue()
+					* (Integer) minSpriteSizeSpinner.getValue();
 
 			heightSpinner.setValue(value);
 			break;
+		// when widthSpinner is modified
 		case 2:
 			value = (Integer) widthSpinner.getValue()
-					/ (Integer) spinner.getValue()
-					* (Integer) spinner.getValue();
+					/ (Integer) minSpriteSizeSpinner.getValue()
+					* (Integer) minSpriteSizeSpinner.getValue();
 
 			widthSpinner.setValue(value);
 			break;
