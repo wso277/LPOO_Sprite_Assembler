@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -105,25 +106,31 @@ public class Gui {
 		JMenuItem mntmNewProject = new JMenuItem("New Project");
 		mntmNewProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InitProject newProject = new InitProject();
 
-				newProject.setModalityType(ModalityType.APPLICATION_MODAL);
-				newProject.setVisible(true);
+				if (JOptionPane.showConfirmDialog(null,
+						"Creating new Project. Are you Sure?", "New project",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
-				// If ok button is pressed
-				if (InitAccept) {
-					// Now allows a new sprite to be added
-					mntmNewSprite.setEnabled(true);
+					InitProject newProject = new InitProject();
 
-					// Creates a new project
-					project = new SpriteAssembler(projectName, panelWidth,
-							panelHeight);
-					panel.removeAll();
-					panel.revalidate();
-					// Adds first sprite
-					addSpriteToProject(mntmNewSprite);
-					CreateAccept = false;
-					InitAccept = false;
+					newProject.setModalityType(ModalityType.APPLICATION_MODAL);
+					newProject.setVisible(true);
+
+					// If ok button is pressed
+					if (InitAccept) {
+						// Now allows a new sprite to be added
+						mntmNewSprite.setEnabled(true);
+
+						// Creates a new project
+						project = new SpriteAssembler(projectName, panelWidth,
+								panelHeight);
+						panel.removeAll();
+						panel.revalidate();
+						// Adds first sprite
+						addSpriteToProject(mntmNewSprite);
+						CreateAccept = false;
+						InitAccept = false;
+					}
 				}
 			}
 		});
@@ -147,13 +154,18 @@ public class Gui {
 		JMenuItem mntmCloseProject = new JMenuItem("Close Project");
 		mntmCloseProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				project = null;
-				panel.removeAll();
-				panel.revalidate();
-				panel.repaint();
-				mntmNewSprite.setEnabled(false);
-				mnEdit.setEnabled(false);
-				mntmExport.setEnabled(false);
+
+				if (JOptionPane.showConfirmDialog(null,
+						"Closing Project. Are you Sure?", "Close project",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					project = null;
+					panel.removeAll();
+					panel.revalidate();
+					panel.repaint();
+					mntmNewSprite.setEnabled(false);
+					mnEdit.setEnabled(false);
+					mntmExport.setEnabled(false);
+				}
 			}
 		});
 		mnFile.add(mntmCloseProject);
@@ -162,7 +174,12 @@ public class Gui {
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+
+				if (JOptionPane.showConfirmDialog(null,
+						"Exiting Program. Are you Sure?", "Exiting",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					System.exit(0);
+				}
 			}
 		});
 		mnFile.add(mntmExit);
@@ -186,10 +203,15 @@ public class Gui {
 		JMenuItem mntmDelete = new JMenuItem("Delete Sprite");
 		mntmDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				deleteSprite();
 
-				panel.revalidate();
-				panel.repaint();
+				if (JOptionPane.showConfirmDialog(null,
+						"Delete Sprite. Are you Sure?", "Delete Sprite",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					deleteSprite();
+
+					panel.revalidate();
+					panel.repaint();
+				}
 			}
 
 		});
@@ -199,6 +221,13 @@ public class Gui {
 		menuBar.add(mnHelp);
 
 		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AboutDialog about = new AboutDialog();
+				about.setModalityType(ModalityType.APPLICATION_MODAL);
+				about.setVisible(true);
+			}
+		});
 		mnHelp.add(mntmAbout);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
@@ -264,12 +293,19 @@ public class Gui {
 								.get(i)
 								.setLocation(k * spriteMinSize,
 										z * spriteMinSize);
+
+						animation.getImages().get(i).setMatrixPos(k, z);
+						fillMatrix(animation, i);
+
+						getPanel().add(animation.getImages().get(i));
+					} else {
+						spIndex = project.getSprites().size() - 1;
+						JOptionPane.showMessageDialog(null,
+								"Too many images for the Workspace", "Alert",
+								JOptionPane.ERROR_MESSAGE);
+						deleteSprite();
+
 					}
-
-					animation.getImages().get(i).setMatrixPos(k, z);
-					fillMatrix(animation, i);
-
-					getPanel().add(animation.getImages().get(i));
 					getPanel().revalidate();
 				}
 				getPanel().repaint();
@@ -330,7 +366,7 @@ public class Gui {
 			}
 			if (res) {
 				break;
-			} else if (z != project.getFilled().length - 1) {
+			} else if (k != project.getFilled().length - 1) {
 				res = true;
 			}
 		}
@@ -342,6 +378,8 @@ public class Gui {
 	 * position in the filled matrix.
 	 */
 	private void deleteSprite() {
+		
+		try {
 		for (int i = 0; i < project.getSprites().get(spIndex).getImages()
 				.size(); i++) {
 
@@ -364,6 +402,13 @@ public class Gui {
 		project.getSprites().remove(spIndex);
 		if (project.getSprites().size() == 0) {
 			mntmExport.setEnabled(false);
+		}
+		}
+		catch (NullPointerException e){
+			project.getSprites().remove(spIndex);
+			if (project.getSprites().size() == 0) {
+				mntmExport.setEnabled(false);
+			}
 		}
 	}
 
