@@ -1,7 +1,5 @@
 package logic;
 
-import gui.Gui;
-
 import java.util.ArrayList;
 
 public class SpriteAssembler {

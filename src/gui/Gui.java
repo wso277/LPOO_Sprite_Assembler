@@ -19,7 +19,6 @@ import java.awt.event.ActionEvent;
 import logic.Exporter;
 import logic.Main;
 import logic.Sprite;
-import logic.SpriteAssembler;
 import logic.SpriteElement;
 
 import javax.swing.JPanel;
@@ -48,8 +47,6 @@ public class Gui {
 	protected static int fps;
 	private static int spIndex = 0;
 	private boolean fits = true;
-	private static Main project;
-
 	/**
 	 * Launch the application.
 	 */
@@ -121,8 +118,7 @@ public class Gui {
 						// Now allows a new sprite to be added
 						mntmNewSprite.setEnabled(true);
 
-						// Creates a new project
-						project = new Main(projectName, panelWidth,
+						new Main(projectName, panelWidth,
 								panelHeight);
 						panel.removeAll();
 						panel.revalidate();
@@ -163,7 +159,6 @@ public class Gui {
 				if (JOptionPane.showConfirmDialog(null,
 						"Closing Project. Are you Sure?", "Close project",
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					project = null;
 					panel.removeAll();
 					panel.revalidate();
 					panel.repaint();

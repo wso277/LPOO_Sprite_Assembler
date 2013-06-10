@@ -80,9 +80,9 @@ public class InitProject extends JDialog {
 
 		// Adds the minimum sprite size spinner and initializes the valid value
 		// handler
-		JLabel lblSpriteLenght = new JLabel("Minimum Sprite Lenght");
-		lblSpriteLenght.setBounds(40, 149, 202, 15);
-		contentPanel.add(lblSpriteLenght);
+		JLabel lblSpriteLength = new JLabel("Minimum Sprite Length");
+		lblSpriteLength.setBounds(40, 149, 202, 15);
+		contentPanel.add(lblSpriteLength);
 		minSpriteSizeSpinner.setModel(new SpinnerNumberModel(new Integer(16),
 				new Integer(16), null, new Integer(16)));
 		minSpriteSizeSpinner.setBounds(237, 147, 114, 20);
