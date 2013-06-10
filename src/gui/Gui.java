@@ -4,6 +4,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -145,7 +146,12 @@ public class Gui {
 		mntmExport.setEnabled(false);
 		mntmExport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Exporter.export();
+				try {
+					Exporter.export();
+				} catch (URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		mnFile.add(mntmExport);

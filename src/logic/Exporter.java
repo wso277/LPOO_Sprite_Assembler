@@ -5,6 +5,9 @@ import gui.Gui;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
+
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,8 +32,9 @@ public class Exporter {
 	/**
 	 * Exports the project to a png containing all images and a xpm containing
 	 * all relevant project info.
+	 * @throws URISyntaxException 
 	 */
-	public static void export() {
+	public static void export() throws URISyntaxException {
 		// Exporting image
 		BufferedImage bi = new BufferedImage(Gui.getPanel().getSize().width,
 				Gui.getPanel().getSize().height, BufferedImage.TYPE_INT_ARGB);
@@ -38,7 +42,10 @@ public class Exporter {
 		Gui.getPanel().paint(g); // this == JComponent
 		g.dispose();
 		try {
-			File png = new File(Main.getProject().getName() + ".png");
+			CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
+			File jarFile = new File(codeSource.getLocation().toURI().getPath());
+			String jarDir = jarFile.getParentFile().getPath();
+			File png = new File(jarDir + File.separator + Main.getProject().getName() + ".png");
 			ImageIO.write(bi, "png", png);
 		} catch (Exception ex) {
 		}
@@ -136,7 +143,10 @@ public class Exporter {
 					.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(Main.getProject()
+			CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
+			File jarFile = new File(codeSource.getLocation().toURI().getPath());
+			String jarDir = jarFile.getParentFile().getPath();
+			StreamResult result = new StreamResult(new File(jarDir + File.separator + Main.getProject()
 					.getName() + ".xml"));
 
 			// Output to console for testing
