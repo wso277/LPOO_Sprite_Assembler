@@ -44,7 +44,7 @@ public class DraggableComponent extends JComponent {
 	private Point mouse1;
 	private Point mouse2;
 	private Point delta;
-	Point validPos;
+	private Point validPos;
 
 	protected int xsquares;
 	protected int ysquares;
@@ -117,21 +117,21 @@ public class DraggableComponent extends JComponent {
 
 				// Gets the image position in the fillable matrix scale
 				int heightCells = (int) Math.ceil((double) getHeight()
-						/ (double) Gui.spriteMinSize);
+						/ (double) Main.spriteMinSize);
 				int widthCells = (int) Math.ceil((double) getWidth()
-						/ (double) Gui.spriteMinSize);
+						/ (double) Main.spriteMinSize);
 
 				// Gets the mouse change
-				deltax = (mouse2.x - mouse1.x) / Gui.spriteMinSize;
-				deltay = (mouse2.y - mouse1.y) / Gui.spriteMinSize;
+				deltax = (mouse2.x - mouse1.x) / Main.spriteMinSize;
+				deltay = (mouse2.y - mouse1.y) / Main.spriteMinSize;
 
 				fits = checkIfFits(heightCells, widthCells);
 				if (fits) {
 					validPos.x = deltax + delta.x;
 					validPos.y = deltay + delta.y;
 				}
-				setLocation((deltax + delta.x) * Gui.spriteMinSize,
-						(deltay + delta.y) * Gui.spriteMinSize);
+				setLocation((deltax + delta.x) * Main.spriteMinSize,
+						(deltay + delta.y) * Main.spriteMinSize);
 
 				// Change Z-Buffer if it is "overbearing"
 				if (overbearing) {
@@ -174,8 +174,8 @@ public class DraggableComponent extends JComponent {
 				// If it doesn't fit it is sent to the last valid position
 				if (!fits) {
 					fits = true;
-					setLocation(validPos.x * Gui.spriteMinSize, validPos.y
-							* Gui.spriteMinSize);
+					setLocation(validPos.x * Main.spriteMinSize, validPos.y
+							* Main.spriteMinSize);
 				}
 
 				for (int i = 0; i < getXsquares(); i++) {
@@ -248,7 +248,7 @@ public class DraggableComponent extends JComponent {
 	 *            The image width in matrix cells
 	 * @return True if it fits. False if it doesn't.
 	 */
-	private boolean checkIfFits(int heightCells, int widthCells) {
+	public boolean checkIfFits(int heightCells, int widthCells) {
 		boolean res = true;
 		for (int i = 0; i < widthCells; i++) {
 			for (int j = 0; j < heightCells; j++) {
@@ -376,5 +376,29 @@ public class DraggableComponent extends JComponent {
 
 	public void setValidPos(Point validPos) {
 		this.validPos = validPos;
+	}
+	
+	public Point getDelta() {
+		return delta;
+	}
+
+	public void setDelta(Point delta) {
+		this.delta = delta;
+	}
+
+	public int getDeltax() {
+		return deltax;
+	}
+
+	public void setDeltax(int deltax) {
+		this.deltax = deltax;
+	}
+
+	public int getDeltay() {
+		return deltay;
+	}
+
+	public void setDeltay(int deltay) {
+		this.deltay = deltay;
 	}
 }

@@ -16,6 +16,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
+import logic.Main;
+
 /**
  * Class that handles the window in which the project is created.
  */
@@ -111,7 +113,7 @@ public class InitProject extends JDialog {
 						(Integer) heightSpinner.getValue());
 				Gui.frame.setSize((Integer) widthSpinner.getValue(),
 						(Integer) heightSpinner.getValue() + 45);
-				Gui.spriteMinSize = (Integer) minSpriteSizeSpinner.getValue();
+				Main.spriteMinSize = (Integer) minSpriteSizeSpinner.getValue();
 				Gui.panelHeight = (Integer) heightSpinner.getValue();
 				Gui.panelWidth = (Integer) widthSpinner.getValue();
 

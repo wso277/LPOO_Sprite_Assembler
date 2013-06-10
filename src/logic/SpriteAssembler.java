@@ -24,8 +24,8 @@ public class SpriteAssembler {
 		sprites = new ArrayList<Sprite>();
 		
 		
-		height = height / Gui.spriteMinSize;
-		width = width / Gui.spriteMinSize;
+		height = height / Main.spriteMinSize;
+		width = width / Main.spriteMinSize;
 		
 		filled = new Integer[width][height];
 		

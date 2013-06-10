@@ -40,7 +40,6 @@ public class Gui {
 	static public boolean InitAccept = false;
 	static public String spriteName;
 	static public boolean CreateAccept = false;
-	static public int spriteMinSize;
 	static public int panelHeight;
 	static public int panelWidth;
 	int k = 0;
@@ -297,8 +296,8 @@ public class Gui {
 						animation
 								.getImages()
 								.get(i)
-								.setLocation(k * spriteMinSize,
-										z * spriteMinSize);
+								.setLocation(k * Main.spriteMinSize,
+										z * Main.spriteMinSize);
 
 						animation.getImages().get(i).setMatrixPos(k, z);
 						fillMatrix(animation, i);

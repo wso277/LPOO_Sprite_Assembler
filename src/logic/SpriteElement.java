@@ -34,9 +34,9 @@ public class SpriteElement extends DraggableComponent implements ImageObserver {
 		}
 
 		xsquares = (int) Math.ceil((double) this.image.getWidth(this)
-				/ (double) Gui.spriteMinSize);
+				/ (double) Main.spriteMinSize);
 		ysquares = (int) Math.ceil((double) this.image.getHeight(this)
-				/ (double) Gui.spriteMinSize);
+				/ (double) Main.spriteMinSize);
 	}
 
 	public File getFile() {

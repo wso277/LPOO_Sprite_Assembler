@@ -6,7 +6,8 @@ package logic;
 public class Main {
 
 	protected static SpriteAssembler project;
-
+	static public int spriteMinSize;
+	
 	public static SpriteAssembler getProject() {
 		return project;
 	}
