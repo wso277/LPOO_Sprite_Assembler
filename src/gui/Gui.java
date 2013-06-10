@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import logic.Exporter;
+import logic.Main;
 import logic.Sprite;
 import logic.SpriteAssembler;
 import logic.SpriteElement;
@@ -32,8 +33,6 @@ public class Gui {
 	static JFrame frame;
 	final JFileChooser fc = new JFileChooser();
 	static String projectName;
-	static private SpriteAssembler project;
-
 	private static JPanel panel;
 	private static JMenu mnEdit;
 	private JMenuItem mntmExport;
@@ -49,6 +48,7 @@ public class Gui {
 	protected static int fps;
 	private static int spIndex = 0;
 	private boolean fits = true;
+	private static Main project;
 
 	/**
 	 * Launch the application.
@@ -122,7 +122,7 @@ public class Gui {
 						mntmNewSprite.setEnabled(true);
 
 						// Creates a new project
-						project = new SpriteAssembler(projectName, panelWidth,
+						project = new Main(projectName, panelWidth,
 								panelHeight);
 						panel.removeAll();
 						panel.revalidate();
@@ -272,7 +272,7 @@ public class Gui {
 				}
 
 				// Adds sprite to project
-				project.addSprite(animation);
+				Main.getProject().addSprite(animation);
 
 				// Adds sprite to panel
 				for (int i = 0; i < animation.getImages().size(); i++) {
@@ -299,7 +299,7 @@ public class Gui {
 
 						getPanel().add(animation.getImages().get(i));
 					} else {
-						spIndex = project.getSprites().size() - 1;
+						spIndex = Main.getProject().getSprites().size() - 1;
 						JOptionPane.showMessageDialog(null,
 								"Too many images for the Workspace", "Alert",
 								JOptionPane.ERROR_MESSAGE);
@@ -327,7 +327,7 @@ public class Gui {
 				.getXsquares(); wsquare++) {
 			for (int hsquare = 0; hsquare < animation.getImages().get(i)
 					.getYsquares(); hsquare++) {
-				project.setFilled(k + wsquare, z + hsquare, 1);
+				Main.getProject().setFilled(k + wsquare, z + hsquare, 1);
 			}
 		}
 	}
@@ -343,16 +343,16 @@ public class Gui {
 	 */
 	private boolean checkIfFits(SpriteElement image) {
 		boolean res = true;
-		for (k = 0; k < project.getFilled().length; k++) {
-			for (z = 0; z < project.getFilled()[k].length; z++) {
+		for (k = 0; k < Main.getProject().getFilled().length; k++) {
+			for (z = 0; z < Main.getProject().getFilled()[k].length; z++) {
 				for (int l = 0; l < image.getXsquares(); l++) {
 					for (int m = 0; m < image.getYsquares(); m++) {
 
-						if (Gui.getProject().getFilled().length <= (k + l)
+						if (Main.getProject().getFilled().length <= (k + l)
 								|| (k + l) < 0
-								|| Gui.getProject().getFilled()[k].length <= (z + m)
+								|| Main.getProject().getFilled()[k].length <= (z + m)
 								|| (z + m) < 0
-								|| Gui.getProject().getFilled()[k + l][z + m] == 1) {
+								|| Main.getProject().getFilled()[k + l][z + m] == 1) {
 							res = false;
 							break;
 						}
@@ -360,13 +360,13 @@ public class Gui {
 				}
 				if (res) {
 					break;
-				} else if (z != project.getFilled()[k].length - 1) {
+				} else if (z != Main.getProject().getFilled()[k].length - 1) {
 					res = true;
 				}
 			}
 			if (res) {
 				break;
-			} else if (k != project.getFilled().length - 1) {
+			} else if (k != Main.getProject().getFilled().length - 1) {
 				res = true;
 			}
 		}
@@ -380,33 +380,33 @@ public class Gui {
 	private void deleteSprite() {
 		
 		try {
-		for (int i = 0; i < project.getSprites().get(spIndex).getImages()
+		for (int i = 0; i < Main.getProject().getSprites().get(spIndex).getImages()
 				.size(); i++) {
 
-			for (int j = 0; j < project.getSprites().get(spIndex).getImages()
+			for (int j = 0; j < Main.getProject().getSprites().get(spIndex).getImages()
 					.get(i).getXsquares(); j++) {
-				for (int k = 0; k < project.getSprites().get(spIndex)
+				for (int k = 0; k < Main.getProject().getSprites().get(spIndex)
 						.getImages().get(i).getYsquares(); k++) {
-					project.getFilled()[project.getSprites().get(spIndex)
+					Main.getProject().getFilled()[Main.getProject().getSprites().get(spIndex)
 							.getImages().get(i).getValidPos().x
-							+ j][project.getSprites().get(spIndex).getImages()
+							+ j][Main.getProject().getSprites().get(spIndex).getImages()
 							.get(i).getValidPos().y
 							+ k] = 0;
 				}
 			}
 
-			panel.remove(project.getSprites().get(spIndex).getImages().get(i));
+			panel.remove(Main.getProject().getSprites().get(spIndex).getImages().get(i));
 			mnEdit.setEnabled(false);
 		}
 
-		project.getSprites().remove(spIndex);
-		if (project.getSprites().size() == 0) {
+		Main.getProject().getSprites().remove(spIndex);
+		if (Main.getProject().getSprites().size() == 0) {
 			mntmExport.setEnabled(false);
 		}
 		}
 		catch (NullPointerException e){
-			project.getSprites().remove(spIndex);
-			if (project.getSprites().size() == 0) {
+			Main.getProject().getSprites().remove(spIndex);
+			if (Main.getProject().getSprites().size() == 0) {
 				mntmExport.setEnabled(false);
 			}
 		}
@@ -418,10 +418,6 @@ public class Gui {
 
 	public static void setPanel(JPanel panel) {
 		Gui.panel = panel;
-	}
-
-	static public SpriteAssembler getProject() {
-		return project;
 	}
 
 	public static JMenu getMnEdit() {

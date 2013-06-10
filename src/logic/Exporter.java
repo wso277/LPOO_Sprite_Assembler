@@ -38,7 +38,7 @@ public class Exporter {
 		Gui.getPanel().paint(g); // this == JComponent
 		g.dispose();
 		try {
-			File png = new File(Gui.getProject().getName() + ".png");
+			File png = new File(Main.getProject().getName() + ".png");
 			ImageIO.write(bi, "png", png);
 		} catch (Exception ex) {
 		}
@@ -59,7 +59,7 @@ public class Exporter {
 			// image info
 			Element pngInfo = doc.createElement("pnginfo");
 			Attr fileName = doc.createAttribute("fileName");
-			fileName.setValue(Gui.getProject().getName() + ".png");
+			fileName.setValue(Main.getProject().getName() + ".png");
 			pngInfo.setAttributeNode(fileName);
 			Attr pngWidth = doc.createAttribute("width");
 			pngWidth.setValue(Integer.toString(Gui.panelWidth));
@@ -70,20 +70,20 @@ public class Exporter {
 			rootElement.appendChild(pngInfo);
 
 			// sprites
-			for (int i = 0; i < Gui.getProject().getSprites().size(); i++) {
+			for (int i = 0; i < Main.getProject().getSprites().size(); i++) {
 				Element sprite = doc.createElement("sprite");
 				rootElement.appendChild(sprite);
 				// sprite attributes
 				{
 					// name
 					Attr name = doc.createAttribute("name");
-					name.setValue(Gui.getProject().getSprites().get(i)
+					name.setValue(Main.getProject().getSprites().get(i)
 							.getName());
 					sprite.setAttributeNode(name);
 
 					// canLoop
 					Attr canLoop = doc.createAttribute("canLoop");
-					if (Gui.getProject().getSprites().get(i).getCanLoop()) {
+					if (Main.getProject().getSprites().get(i).getCanLoop()) {
 
 						canLoop.setValue("true");
 					} else {
@@ -93,12 +93,12 @@ public class Exporter {
 
 					// fps
 					Attr fps = doc.createAttribute("fps");
-					fps.setValue(Integer.toString(Gui.getProject().getSprites()
+					fps.setValue(Integer.toString(Main.getProject().getSprites()
 							.get(i).getFps()));
 					sprite.setAttributeNode(fps);
 				}
 				// sprite elements
-				for (int j = 0; j < Gui.getProject().getSprites().get(i)
+				for (int j = 0; j < Main.getProject().getSprites().get(i)
 						.getImages().size(); j++) {
 					// image
 					Element image = doc.createElement("image");
@@ -107,23 +107,23 @@ public class Exporter {
 					{
 						// x
 						Attr x = doc.createAttribute("x");
-						x.setValue(Integer.toString(Gui.getProject()
+						x.setValue(Integer.toString(Main.getProject()
 								.getSprites().get(i).getImages().get(j).getX()));
 						image.setAttributeNode(x);
 						// y
 						Attr y = doc.createAttribute("y");
-						y.setValue(Integer.toString(Gui.getProject()
+						y.setValue(Integer.toString(Main.getProject()
 								.getSprites().get(i).getImages().get(j).getY()));
 						image.setAttributeNode(y);
 						// width
 						Attr width = doc.createAttribute("width");
-						width.setValue(Integer.toString(Gui.getProject()
+						width.setValue(Integer.toString(Main.getProject()
 								.getSprites().get(i).getImages().get(j)
 								.getWidth()));
 						image.setAttributeNode(width);
 						// height
 						Attr height = doc.createAttribute("height");
-						height.setValue(Integer.toString(Gui.getProject()
+						height.setValue(Integer.toString(Main.getProject()
 								.getSprites().get(i).getImages().get(j)
 								.getHeight()));
 						image.setAttributeNode(height);
@@ -136,7 +136,7 @@ public class Exporter {
 					.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(Gui.getProject()
+			StreamResult result = new StreamResult(new File(Main.getProject()
 					.getName() + ".xml"));
 
 			// Output to console for testing

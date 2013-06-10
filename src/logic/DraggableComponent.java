@@ -151,7 +151,7 @@ public class DraggableComponent extends JComponent {
 				// Cleaning previous position
 				for (int i = 0; i < getXsquares(); i++) {
 					for (int j = 0; j < getYsquares(); j++) {
-						Gui.getProject().getFilled()[validPos.x + i][validPos.y
+						Main.getProject().getFilled()[validPos.x + i][validPos.y
 								+ j] = 0;
 					}
 				}
@@ -180,7 +180,7 @@ public class DraggableComponent extends JComponent {
 
 				for (int i = 0; i < getXsquares(); i++) {
 					for (int j = 0; j < getYsquares(); j++) {
-						Gui.getProject().getFilled()[validPos.x + i][validPos.y
+						Main.getProject().getFilled()[validPos.x + i][validPos.y
 								+ j] = 1;
 					}
 				}
@@ -198,8 +198,7 @@ public class DraggableComponent extends JComponent {
 					int i = findSprite();
 
 					// Sets of a preview
-					PreviewAnimation preview = new PreviewAnimation(Gui
-							.getProject().getSprites().get(i));
+					PreviewAnimation preview = new PreviewAnimation(Main.getProject().getSprites().get(i));
 					preview.setVisible(true);
 				}
 
@@ -224,10 +223,10 @@ public class DraggableComponent extends JComponent {
 		int i;
 		boolean found = false;
 
-		for (i = 0; i < Gui.getProject().getSprites().size(); i++) {
-			for (int j = 0; j < Gui.getProject().getSprites().get(i)
+		for (i = 0; i < Main.getProject().getSprites().size(); i++) {
+			for (int j = 0; j < Main.getProject().getSprites().get(i)
 					.getImages().size(); j++) {
-				if (Gui.getProject().getSprites().get(i).getImages().get(j) == this) {
+				if (Main.getProject().getSprites().get(i).getImages().get(j) == this) {
 					found = true;
 					break;
 				}
@@ -253,14 +252,14 @@ public class DraggableComponent extends JComponent {
 		boolean res = true;
 		for (int i = 0; i < widthCells; i++) {
 			for (int j = 0; j < heightCells; j++) {
-				if (Gui.getProject().getFilled().length <= (deltax + delta.x + i)
+				if (Main.getProject().getFilled().length <= (deltax + delta.x + i)
 						|| (deltax + delta.x + i) < 0
-						|| Gui.getProject().getFilled()[validPos.x].length <= (deltay
+						|| Main.getProject().getFilled()[validPos.x].length <= (deltay
 								+ delta.y + j)
 						|| (deltay + delta.y + j) < 0
 						||
 
-						Gui.getProject().getFilled()[deltax + delta.x + i][deltay
+						Main.getProject().getFilled()[deltax + delta.x + i][deltay
 								+ delta.y + j] == 1) {
 					res = false;
 					break;

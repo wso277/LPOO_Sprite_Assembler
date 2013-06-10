@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import logic.Main;
+
 /**
  * Handles the window in which a sprite can be edited.
  */
@@ -57,9 +59,9 @@ public class EditSprite extends JDialog {
 		fpsSpinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		fpsSpinner.setBounds(286, 92, 77, 20);
 		
-		spriteNameTxt.setText(Gui.getProject().getSprites().get(index).getName());
-		fpsSpinner.setValue(Gui.getProject().getSprites().get(index).getFps());
-		chckbxCanLoop.setSelected(Gui.getProject().getSprites().get(index).getCanLoop());
+		spriteNameTxt.setText(Main.getProject().getSprites().get(index).getName());
+		fpsSpinner.setValue(Main.getProject().getSprites().get(index).getFps());
+		chckbxCanLoop.setSelected(Main.getProject().getSprites().get(index).getCanLoop());
 		
 		contentPanel.add(fpsSpinner);
 		{
@@ -72,9 +74,9 @@ public class EditSprite extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						
-						Gui.getProject().getSprites().get(index).setName(spriteNameTxt.getText());
-						Gui.getProject().getSprites().get(index).setFps((int)fpsSpinner.getValue());
-						Gui.getProject().getSprites().get(index).setCanLoop(chckbxCanLoop.isSelected());
+						Main.getProject().getSprites().get(index).setName(spriteNameTxt.getText());
+						Main.getProject().getSprites().get(index).setFps((int)fpsSpinner.getValue());
+						Main.getProject().getSprites().get(index).setCanLoop(chckbxCanLoop.isSelected());
 						dispose();
 					}
 				});
