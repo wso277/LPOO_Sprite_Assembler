@@ -309,6 +309,7 @@ public class Gui {
 								"Too many images for the Workspace", "Alert",
 								JOptionPane.ERROR_MESSAGE);
 						deleteSprite();
+						break;
 
 					}
 					getPanel().revalidate();

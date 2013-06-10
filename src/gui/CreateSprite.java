@@ -94,6 +94,7 @@ public class CreateSprite extends JDialog {
 				cancelButton.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
+						Gui.CreateAccept = false;
 						dispose();
 					}
 				});
